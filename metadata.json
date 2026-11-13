@@ -1,0 +1,6 @@
+{
+  "name": "Atomic Design · Plataforma Estadística INE Chile",
+  "description": "Presentación académica interactiva de dos diapositivas sobre la metodología Atomic Design aplicada a la visualización ciudadana de estadísticas regionales del INE Chile.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

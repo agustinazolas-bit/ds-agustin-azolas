@@ -1,0 +1,2465 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Diseño INE Chile · Atomic Design</title>
+    <meta
+      name="description"
+      content="Plataforma académica de tres diapositivas sobre Atomic Design aplicada a estadísticas del INE Chile para periodistas, recolectores de información y ciudadanía."
+    />
+    <style>
+      :root {
+        --azul-tinta: #0b2545;
+        --texto-secundario: #475e7b;
+        --texto-suave: #5b7493;
+        --azul-ine: #1d4ed8;
+        --azul-ine-hover: #1e40af;
+        --celeste-acento: #0284c7;
+        --celeste-claro: #0369a1;
+        --fondo-lienzo: #f4f8fc;
+        --papel: #ffffff;
+        --superficie: #f8fbff;
+        --superficie-suave: #eff6ff;
+        --borde: #dce7f3;
+        --borde-suave: #e6eff8;
+        --borde-acento: #bfdbfe;
+        --cabecera-bg: #0b2545;
+        --cabecera-sub: #163b6b;
+        --sombra: 0 10px 35px -15px rgba(11, 37, 69, 0.12);
+        --sans: "Public Sans", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        --display: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      html.dark {
+        --azul-tinta: #f0f6fc;
+        --texto-secundario: #b5cbe2;
+        --texto-suave: #8ba6c6;
+        --azul-ine: #7dd3fc;
+        --azul-ine-hover: #38bdf8;
+        --celeste-acento: #38bdf8;
+        --celeste-claro: #7dd3fc;
+        --fondo-lienzo: #07111f;
+        --papel: #0c192c;
+        --superficie: #0f1f35;
+        --superficie-suave: #142946;
+        --borde: #1e334d;
+        --borde-suave: #182b44;
+        --borde-acento: #244670;
+        --cabecera-bg: #091526;
+        --cabecera-sub: #132844;
+        --sombra: none;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--sans);
+        background-color: var(--fondo-lienzo);
+        color: var(--azul-tinta);
+        line-height: 1.45;
+        -webkit-font-smoothing: antialiased;
+        transition: background-color 0.15s ease, color 0.15s ease;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-display {
+        font-family: var(--display);
+        margin: 0;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .mono-num {
+        font-family: var(--mono);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      select:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid var(--azul-ine);
+        outline-offset: 2px;
+      }
+
+      /* Top Navigation */
+      .topbar {
+        width: 100%;
+        border-bottom: 1px solid var(--borde);
+        background-color: var(--papel);
+        position: sticky;
+        top: 0;
+        z-index: 30;
+      }
+
+      .topbar-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 10px 24px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand-link {
+        font-family: var(--display);
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--azul-tinta);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .slide-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nav-tab {
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--texto-secundario);
+        font-family: var(--sans);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .nav-tab:hover {
+        background-color: var(--superficie);
+        color: var(--azul-tinta);
+      }
+
+      .nav-tab.active {
+        background-color: var(--superficie-suave);
+        color: var(--azul-ine);
+        border-color: var(--borde-acento);
+      }
+
+      .nav-arrows {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-left: 6px;
+        color: var(--texto-suave);
+        font-size: 12px;
+      }
+
+      .icon-btn {
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--texto-secundario);
+        border-radius: 6px;
+        padding: 4px 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .icon-btn:hover {
+        background-color: var(--superficie-suave);
+        color: var(--azul-ine);
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-theme {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--borde);
+        background-color: var(--superficie);
+        color: var(--azul-tinta);
+        font-family: var(--sans);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .btn-theme:hover {
+        background-color: var(--superficie-suave);
+      }
+
+      .btn-primary-nav {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 0;
+        background-color: #0b2545;
+        color: #ffffff;
+        font-family: var(--sans);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      html.dark .btn-primary-nav {
+        background-color: #1d4ed8;
+      }
+
+      .btn-primary-nav:hover {
+        opacity: 0.92;
+      }
+
+      /* Main Layout & Slide Container */
+      .stage {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 18px 24px 28px;
+      }
+
+      .slide {
+        display: none;
+        width: 100%;
+        min-height: 680px;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        background-color: var(--papel);
+        box-shadow: var(--sombra);
+        padding: 24px 28px;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .slide.active {
+        display: flex;
+      }
+
+      .slide-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--borde-suave);
+      }
+
+      .slide-kicker {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--celeste-acento);
+      }
+
+      .slide-title {
+        margin-top: 4px;
+        font-size: clamp(21px, 2.2vw, 28px);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--azul-tinta);
+        line-height: 1.18;
+        text-wrap: balance;
+      }
+
+      .slide-subtitle {
+        margin-top: 4px;
+        font-size: 14px;
+        color: var(--texto-secundario);
+      }
+
+      .slide-meta-right {
+        font-size: 12px;
+        color: var(--texto-suave);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .slide-footer {
+        padding-top: 12px;
+        border-top: 1px solid var(--borde-suave);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .closing-quote {
+        font-family: var(--display);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--azul-tinta);
+        margin: 0;
+        max-width: 1050px;
+      }
+
+      .footer-tag {
+        font-size: 11px;
+        color: var(--texto-suave);
+        white-space: nowrap;
+      }
+
+      /* SLIDE 1: 2x5 Progressive Grid */
+      .atomic-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin: auto 0;
+      }
+
+      .atomic-grid-5 {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .row-divider {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 0 4px;
+        font-size: 11px;
+        color: var(--texto-suave);
+      }
+
+      .row-divider-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--borde-acento), var(--celeste-acento));
+      }
+
+      .dim-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--borde);
+        background-color: var(--superficie);
+        border-radius: 12px;
+        padding: 13px;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+      }
+
+      .dim-card:hover {
+        border-color: var(--celeste-acento);
+      }
+
+      .dim-card.selected {
+        border-color: var(--azul-ine);
+        background-color: var(--superficie-suave);
+      }
+
+      .dim-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--borde-suave);
+      }
+
+      .dim-idx-group {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .dim-icon-box {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background-color: var(--superficie-suave);
+        color: var(--azul-ine);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .dim-index {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--azul-ine);
+      }
+
+      .dim-stage {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--texto-suave);
+      }
+
+      .dim-title {
+        margin-top: 9px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--azul-tinta);
+        line-height: 1.3;
+      }
+
+      .dim-desc {
+        margin-top: 6px;
+        font-size: 11px;
+        line-height: 1.46;
+        color: var(--texto-secundario);
+      }
+
+      .dim-bottom {
+        margin-top: 10px;
+        padding-top: 8px;
+        border-top: 1px solid var(--borde-suave);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 10.5px;
+      }
+
+      .dim-kw-label {
+        color: var(--texto-suave);
+      }
+
+      .dim-kw-val {
+        font-family: var(--display);
+        font-weight: 700;
+        color: var(--celeste-claro);
+      }
+
+      .dim-link {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--azul-ine);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      /* SLIDE 2: 75% Product Showcase + 25% Annotations */
+      .slide2-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 9fr) minmax(0, 3fr);
+        gap: 16px;
+        align-items: stretch;
+        flex: 1;
+      }
+
+      .product-frame {
+        border: 1px solid var(--borde-acento);
+        border-radius: 12px;
+        background-color: var(--papel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .product-header {
+        background-color: var(--cabecera-bg);
+        color: #ffffff;
+        padding: 10px 14px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .product-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .ine-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background-color: #1d4ed8;
+        color: #ffffff;
+        font-family: var(--display);
+        font-size: 11px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .product-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .zone-group {
+        display: inline-flex;
+        gap: 2px;
+        background-color: var(--cabecera-sub);
+        padding: 2px;
+        border-radius: 8px;
+      }
+
+      .zone-btn {
+        border: 0;
+        background: transparent;
+        color: #cbd5e1;
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .zone-btn.active {
+        background-color: #0284c7;
+        color: #ffffff;
+      }
+
+      .region-select {
+        border: 1px solid rgba(125, 211, 252, 0.4);
+        background-color: var(--cabecera-sub);
+        color: #ffffff;
+        font-family: var(--sans);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 8px;
+        border-radius: 7px;
+      }
+
+      .product-body {
+        display: grid;
+        grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+        gap: 12px;
+        padding: 12px;
+        background-color: var(--superficie);
+        flex: 1;
+      }
+
+      .map-col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .metric-switch {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        background-color: var(--borde-suave);
+        padding: 3px;
+        border-radius: 8px;
+      }
+
+      .metric-btn {
+        border: 0;
+        background: transparent;
+        color: var(--texto-secundario);
+        font-size: 10px;
+        font-weight: 600;
+        padding: 5px 4px;
+        border-radius: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .metric-btn.active {
+        background-color: var(--papel);
+        color: var(--azul-ine);
+      }
+
+      .map-box {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--borde);
+        background-color: var(--papel);
+        border-radius: 10px;
+        padding: 10px;
+        min-height: 240px;
+      }
+
+      .map-tooltip {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 34px;
+        z-index: 10;
+        border: 1px solid var(--borde-acento);
+        background-color: var(--papel);
+        border-radius: 8px;
+        padding: 5px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 11px;
+        pointer-events: none;
+      }
+
+      .map-svg-wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+      }
+
+      .map-svg {
+        width: 100%;
+        max-height: 310px;
+        height: 100%;
+      }
+
+      .map-legend {
+        padding-top: 6px;
+        border-top: 1px solid var(--borde-suave);
+        font-size: 10px;
+        color: var(--texto-suave);
+      }
+
+      .legend-bar {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        height: 6px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 4px 0;
+      }
+
+      .stats-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .card-panel {
+        border: 1px solid var(--borde);
+        background-color: var(--papel);
+        border-radius: 10px;
+        padding: 11px 12px;
+      }
+
+      .zone-highlighted {
+        outline: 2px solid var(--celeste-acento);
+        outline-offset: 2px;
+      }
+
+      .region-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--borde-suave);
+      }
+
+      .kpi-grid-4 {
+        margin-top: 9px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .kpi-tile {
+        border: 1px solid var(--borde-suave);
+        background-color: var(--superficie);
+        border-radius: 8px;
+        padding: 8px 9px;
+      }
+
+      .kpi-tile.primary {
+        background-color: var(--superficie-suave);
+        border-color: var(--borde-acento);
+      }
+
+      .kpi-val {
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--azul-tinta);
+        margin-top: 2px;
+      }
+
+      .kpi-tile.primary .kpi-val {
+        color: var(--azul-ine);
+      }
+
+      .context-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .bar-track {
+        height: 7px;
+        width: 100%;
+        border-radius: 999px;
+        background-color: var(--superficie-suave);
+        overflow: hidden;
+        margin-top: 3px;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        background-color: #1d4ed8;
+        transition: width 0.2s ease;
+      }
+
+      .bar-fill.sky {
+        background-color: #38bdf8;
+      }
+
+      .bar-fill.muted {
+        background-color: #93c5fd;
+      }
+
+      .note-box {
+        border: 1px solid var(--borde-acento);
+        background-color: var(--superficie-suave);
+        border-radius: 10px;
+        padding: 9px 11px;
+        font-size: 11px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .note-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-top: 6px;
+        border-top: 1px solid var(--borde-acento);
+        font-size: 10.5px;
+      }
+
+      .note-links a {
+        color: var(--azul-ine);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .note-links a:hover {
+        text-decoration: underline;
+      }
+
+      /* Slide 2 Annotations Column */
+      .annotations-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .anno-card {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid var(--borde);
+        background-color: var(--superficie);
+        border-radius: 11px;
+        padding: 10px 13px;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+      }
+
+      .anno-card:hover,
+      .anno-card.active {
+        border-color: var(--celeste-acento);
+        background-color: var(--superficie-suave);
+      }
+
+      .anno-connector {
+        position: absolute;
+        left: -16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        display: flex;
+        align-items: center;
+      }
+
+      .anno-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        border: 1px solid var(--celeste-acento);
+        background-color: var(--papel);
+      }
+
+      .anno-card.active .anno-dot {
+        background-color: var(--celeste-acento);
+      }
+
+      .anno-line {
+        flex: 1;
+        height: 1px;
+        background-color: var(--borde-acento);
+      }
+
+      .anno-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .anno-num {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background-color: var(--superficie-suave);
+        border: 1px solid var(--borde-acento);
+        color: var(--azul-ine);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .anno-card.active .anno-num {
+        background-color: #1d4ed8;
+        color: #ffffff;
+      }
+
+      /* SLIDE 3: Design System Specimen (ds-ejemplo inspired) */
+      .ds-section {
+        border: 1px solid var(--borde);
+        background-color: var(--superficie);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .ds-sec-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--borde-suave);
+      }
+
+      .ds-sec-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--azul-tinta);
+      }
+
+      .grid-2-uneven {
+        display: grid;
+        grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+        gap: 14px;
+      }
+
+      .grid-2-equal {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid-3-equal {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .canvas-grid-8 {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .swatch-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .swatch-btn {
+        text-align: left;
+        border: 1px solid var(--borde);
+        background-color: var(--papel);
+        border-radius: 9px;
+        padding: 9px;
+        cursor: pointer;
+        color: var(--azul-tinta);
+      }
+
+      .swatch-btn:hover {
+        border-color: var(--azul-ine);
+      }
+
+      .swatch-color {
+        height: 36px;
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid var(--borde);
+        margin-bottom: 7px;
+      }
+
+      .atoms-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .atom-btn {
+        border: 0;
+        border-radius: 8px;
+        background-color: #1d4ed8;
+        color: #ffffff;
+        font-family: var(--sans);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 7px 12px;
+        cursor: pointer;
+      }
+
+      .atom-btn:hover {
+        background-color: #1e40af;
+      }
+
+      .ds-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+      }
+
+      .ds-table th {
+        text-align: left;
+        padding: 6px 6px;
+        border-bottom: 1px solid var(--borde);
+        color: var(--texto-suave);
+        font-weight: 600;
+      }
+
+      .ds-table td {
+        padding: 6px 6px;
+        border-bottom: 1px solid var(--borde-suave);
+      }
+
+      .ds-table tr {
+        cursor: pointer;
+      }
+
+      .ds-table tr.current-row {
+        background-color: var(--superficie-suave);
+        font-weight: 700;
+      }
+
+      .state-pill-btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 6px 11px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background-color: rgba(11, 37, 69, 0.58);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal-card {
+        width: 100%;
+        max-width: 660px;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        background-color: var(--papel);
+        padding: 22px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      }
+
+      /* Responsive */
+      @media (max-width: 1080px) {
+        .atomic-grid-5 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .slide2-layout,
+        .grid-2-uneven,
+        .grid-2-equal {
+          grid-template-columns: 1fr;
+        }
+        .anno-connector {
+          display: none;
+        }
+        .swatch-grid-6 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .atomic-grid-5,
+        .product-body,
+        .kpi-grid-4,
+        .context-grid-2,
+        .grid-3-equal,
+        .canvas-grid-8,
+        .atoms-grid-6,
+        .swatch-grid-6 {
+          grid-template-columns: 1fr;
+        }
+        .slide {
+          padding: 16px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="#top" class="brand-link" id="brandHomeLink">Sistema de Diseño INE Chile</a>
+
+        <nav class="slide-nav" aria-label="Navegación de diapositivas">
+          <button type="button" class="nav-tab active" data-slide-target="1">
+            01. Atomic Design
+          </button>
+          <button type="button" class="nav-tab" data-slide-target="2">
+            02. Producto INE
+          </button>
+          <button type="button" class="nav-tab" data-slide-target="3">
+            03. Sistema Vivo
+          </button>
+
+          <div class="nav-arrows">
+            <button type="button" class="icon-btn" id="prevSlideBtn" aria-label="Diapositiva anterior">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <span class="mono-num" id="slideCounter">1 / 3</span>
+            <button type="button" class="icon-btn" id="nextSlideBtn" aria-label="Siguiente diapositiva">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+        </nav>
+
+        <div class="topbar-actions">
+          <button type="button" class="btn-theme" id="themeToggleBtn" aria-label="Cambiar modo de color">
+            <span id="themeIcon"></span>
+            <span id="themeLabel">Oscuro</span>
+          </button>
+          <button type="button" class="btn-primary-nav" id="openTransparencyBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+            Transparencia IA
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="stage" id="top">
+      <!-- DIAPOSITIVA 1 -->
+      <section class="slide active" id="slide-1" aria-labelledby="slide-1-title">
+        <header class="slide-header">
+          <div>
+            <p class="slide-kicker">
+              Diapositiva 01 · Fundamentación Metodológica · Uso principal: Periodistas y recolectores de información
+            </p>
+            <h1 class="slide-title" id="slide-1-title">
+              Construcción del sistema de diseño: Atomic Design
+            </h1>
+            <p class="slide-subtitle">
+              Diez dimensiones para construir una experiencia digital coherente, accesible y escalable.
+            </p>
+          </div>
+          <div class="slide-meta-right">
+            <strong style="color: var(--azul-tinta)">Progresión:</strong>
+            <span>Definición</span>
+            <span>→</span>
+            <span>Sistema base</span>
+            <span>→</span>
+            <span>Ensamblaje</span>
+            <span>→</span>
+            <strong style="color: var(--azul-ine)">Resiliencia y ética</strong>
+          </div>
+        </header>
+
+        <div class="atomic-rows">
+          <div class="atomic-grid-5" id="atomicRow1"></div>
+          <div class="row-divider">
+            <span>Fundamentos conceptuales y atómicos (01–05)</span>
+            <span class="row-divider-line" aria-hidden="true"></span>
+            <span>Composición de interfaz, estados y responsabilidad ciudadana (06–10)</span>
+          </div>
+          <div class="atomic-grid-5" id="atomicRow2"></div>
+        </div>
+
+        <footer class="slide-footer">
+          <blockquote class="closing-quote">
+            «El sistema de diseño no solo organiza elementos visuales: establece las condiciones para transformar datos públicos en información comprensible para la ciudadanía».
+          </blockquote>
+          <span class="footer-tag">Metodología Atomic Design · INE Chile</span>
+        </footer>
+      </section>
+
+      <!-- DIAPOSITIVA 2 -->
+      <section class="slide" id="slide-2" aria-labelledby="slide-2-title">
+        <header class="slide-header">
+          <div>
+            <p class="slide-kicker">
+              Diapositiva 02 · Presentación del Diseño del Producto · Para periodistas y recolectores de información
+            </p>
+            <h1 class="slide-title" id="slide-2-title">
+              Aplicación del sistema de diseño: plataforma de estadísticas INE
+            </h1>
+            <p class="slide-subtitle">
+              Una interfaz que traduce indicadores estadísticos en información accesible para periodistas, recolectores y ciudadanía.
+            </p>
+          </div>
+          <div class="slide-meta-right">
+            <span>Fuente en vivo:</span>
+            <strong class="mono-num" style="color: var(--azul-tinta)" id="slide2BulletinMeta">INE Boletín ENE n.º 335</strong>
+          </div>
+        </header>
+
+        <div class="slide2-layout">
+          <!-- ~75% Dominant Interactive Product Canvas -->
+          <div class="product-frame" id="productFrame">
+            <div class="product-header" id="zone-identity">
+              <div class="product-brand">
+                <div class="ine-mark">INE</div>
+                <div>
+                  <div class="font-display" style="font-size: 12px; font-weight: 700;">
+                    Plataforma de Empleo para Periodistas y Recolectores
+                  </div>
+                  <div style="font-size: 10.5px; color: #bae6fd;" id="ineHeaderSubtitle">
+                    Boletín ENE n.º 335 · junio-agosto 2026 · 2026-09-30
+                  </div>
+                </div>
+              </div>
+
+              <div class="product-controls" id="zone-citizen-controls">
+                <div class="zone-group" role="group" aria-label="Filtrar por macrozona">
+                  <button type="button" class="zone-btn active" data-macrozone="all">Todo Chile</button>
+                  <button type="button" class="zone-btn" data-macrozone="norte">Norte</button>
+                  <button type="button" class="zone-btn" data-macrozone="centro">Centro</button>
+                  <button type="button" class="zone-btn" data-macrozone="sur">Sur</button>
+                  <button type="button" class="zone-btn" data-macrozone="austral">Austral</button>
+                </div>
+
+                <label for="slide2RegionSelect" class="sr-only">Seleccionar región de Chile</label>
+                <select id="slide2RegionSelect" class="region-select"></select>
+              </div>
+            </div>
+
+            <div class="product-body" id="productBody">
+              <!-- Left Map Column -->
+              <div class="map-col" id="zone-organization-map">
+                <div class="metric-switch" role="group" aria-label="Indicador del mapa">
+                  <button type="button" class="metric-btn active" data-metric="tasa">Desocupación</button>
+                  <button type="button" class="metric-btn" data-metric="informalidad">Informalidad</button>
+                  <button type="button" class="metric-btn" data-metric="variacion_pp">Var. (pp)</button>
+                </div>
+
+                <div class="map-box">
+                  <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid var(--borde-suave); padding-bottom:5px;">
+                    <strong style="color:var(--azul-tinta)">Mapa regional INE</strong>
+                    <span id="mapMetricLabel" style="color:var(--texto-suave)">Desocupación</span>
+                  </div>
+
+                  <div class="map-tooltip" id="mapTooltip" style="display:none;">
+                    <strong id="mapTooltipName"></strong>
+                    <span class="mono-num" id="mapTooltipVal" style="color:var(--azul-ine); font-weight:700;"></span>
+                  </div>
+
+                  <div class="map-svg-wrap">
+                    <svg id="chileMapSvg" class="map-svg" viewBox="0 0 155.7 704" role="img" aria-label="Mapa coroplético de las 16 regiones de Chile vinculado a datos del INE"></svg>
+                  </div>
+
+                  <div class="map-legend">
+                    <div class="mono-num" style="display:flex; justify-content:space-between;">
+                      <span id="legendMin">4,0%</span>
+                      <span>Escala regional</span>
+                      <span id="legendMax">11,2%</span>
+                    </div>
+                    <div class="legend-bar" aria-hidden="true">
+                      <span style="background:#dbeafe"></span>
+                      <span style="background:#93c5fd"></span>
+                      <span style="background:#60a5fa"></span>
+                      <span style="background:#2563eb"></span>
+                      <span style="background:#1e3a8a"></span>
+                    </div>
+                    <div>Base vectorial: Regiones__1__93b3efc9.zip</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Stats Column -->
+              <div class="stats-col">
+                <div class="card-panel" id="zone-organization-kpis">
+                  <div class="region-head">
+                    <div>
+                      <h3 class="font-display" style="font-size:16px; font-weight:700;" id="activeRegionTitle">
+                        Cargando región...
+                      </h3>
+                      <p style="font-size:11px; color:var(--texto-suave);" id="activeRegionMeta">
+                        Código territorial · Trimestre
+                      </p>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-size:10px; color:var(--texto-suave);">Referencia nacional (Chile)</div>
+                      <div class="mono-num" style="font-size:13px; font-weight:700;" id="nationalBenchmark">9,6% (+1,0 pp)</div>
+                    </div>
+                  </div>
+
+                  <div class="kpi-grid-4">
+                    <div class="kpi-tile primary">
+                      <div style="font-size:10.5px; color:var(--texto-secundario);">Desocupación</div>
+                      <div class="kpi-val" id="kpiTasa">—</div>
+                      <div style="font-size:10px; color:var(--texto-suave);">Tasa regional</div>
+                    </div>
+                    <div class="kpi-tile">
+                      <div style="font-size:10.5px; color:var(--texto-secundario);">Variación 12 meses</div>
+                      <div class="kpi-val" id="kpiVar">—</div>
+                      <div style="font-size:10px; color:var(--texto-suave);" id="kpiVarLabel">Interanual</div>
+                    </div>
+                    <div class="kpi-tile">
+                      <div style="font-size:10.5px; color:var(--texto-secundario);">Ocupación informal</div>
+                      <div class="kpi-val" style="color:var(--celeste-claro);" id="kpiInformalidad">—</div>
+                      <div style="font-size:10px; color:var(--texto-suave);">Sobre total ocupados</div>
+                    </div>
+                    <div class="kpi-tile">
+                      <div style="font-size:10.5px; color:var(--texto-secundario);">Por sexo (H / M)</div>
+                      <div class="kpi-val" style="font-size:14px;" id="kpiSexo">—</div>
+                      <div style="font-size:10px; color:var(--texto-suave);">Hombres vs. Mujeres</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="context-grid-2" id="zone-context">
+                  <div class="card-panel">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; margin-bottom:8px;">
+                      <span id="sexCardTitle">Brecha por sexo</span>
+                      <span class="mono-num" style="color:var(--texto-suave);" id="sexGapDiff">—</span>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                      <div style="display:flex; justify-content:space-between; font-size:10.5px;">
+                        <span>Hombres</span>
+                        <strong class="mono-num" id="sexMenVal">—</strong>
+                      </div>
+                      <div class="bar-track"><div class="bar-fill sky" id="sexMenBar" style="width:0%"></div></div>
+                    </div>
+                    <div>
+                      <div style="display:flex; justify-content:space-between; font-size:10.5px;">
+                        <span>Mujeres</span>
+                        <strong class="mono-num" style="color:var(--azul-ine);" id="sexWomenVal">—</strong>
+                      </div>
+                      <div class="bar-track"><div class="bar-fill" id="sexWomenBar" style="width:0%"></div></div>
+                    </div>
+                  </div>
+
+                  <div class="card-panel">
+                    <div style="font-size:11px; font-weight:700; margin-bottom:6px;" id="contrastCardTitle">
+                      Contraste regional (Chile: 9,6%)
+                    </div>
+                    <div id="regionalContrastBars" style="display:flex; flex-direction:column; gap:6px;"></div>
+                  </div>
+                </div>
+
+                <div class="note-box" id="zone-citizen-note">
+                  <p id="citizenNoteText" style="line-height:1.4;"></p>
+                  <div class="note-links">
+                    <span id="regionSourceText" style="color:var(--texto-secundario); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:390px;"></span>
+                    <div style="display:flex; gap:12px; flex-shrink:0;">
+                      <a id="regionPdfLink" href="#" target="_blank" rel="noopener noreferrer">Boletín PDF ↗</a>
+                      <a id="nationalExcelLink" href="#" target="_blank" rel="noopener noreferrer">Serie Excel ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ~25% Annotations Column -->
+          <aside class="annotations-col" id="annotationsList" aria-label="Anotaciones de diseño del producto"></aside>
+        </div>
+
+        <footer class="slide-footer">
+          <blockquote class="closing-quote">
+            «El diseño busca que las estadísticas no solamente puedan consultarse, sino también comprenderse e interpretarse».
+          </blockquote>
+          <span class="footer-tag">Aplicación en interfaz real · Datos oficiales INE</span>
+        </footer>
+      </section>
+
+      <!-- DIAPOSITIVA 3 -->
+      <section class="slide" id="slide-3" aria-labelledby="slide-3-title">
+        <header class="slide-header">
+          <div>
+            <p class="slide-kicker">
+              Diapositiva 03 · Sistema de Diseño Vivo (Referencia: ds-ejemplo) · Para periodistas y recolectores de información
+            </p>
+            <h1 class="slide-title" id="slide-3-title">
+              Especificación completa del sistema de diseño INE Chile
+            </h1>
+            <p class="slide-subtitle">
+              Documentación viva de las nueve capas operativas, tokens medidos según el tema activo, componentes interactivos y reglas editoriales.
+            </p>
+          </div>
+          <div class="slide-meta-right">
+            <span>Datos en vivo:</span>
+            <strong class="mono-num" style="color: var(--azul-tinta)" id="slide3Meta">/regiones · Boletín ENE 335</strong>
+          </div>
+        </header>
+
+        <!-- 1 · El producto + 2 · Principios -->
+        <div class="grid-2-uneven">
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">1 · El producto: lienzo de 8 casillas y boceto inicial</h2>
+              <span style="font-size:11px; color:var(--celeste-acento); font-weight:600;">Propósito editorial y captura</span>
+            </div>
+            <div class="grid-2-uneven" style="gap:10px;">
+              <div class="canvas-grid-8" id="canvasBoxesGrid"></div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <strong style="font-size:11px;">Boceto de primera pantalla</strong>
+                <svg viewBox="0 0 220 142" style="width:100%; height:auto; border-radius:6px; border:1px solid var(--borde);" role="img" aria-label="Boceto estructural de primera pantalla">
+                  <rect width="220" height="142" fill="var(--superficie)"/>
+                  <rect x="6" y="6" width="208" height="18" rx="3" fill="#0b2545"/>
+                  <rect x="12" y="11" width="64" height="8" rx="2" fill="#38bdf8"/>
+                  <rect x="148" y="10" width="58" height="10" rx="2" fill="#1d4ed8"/>
+                  <rect x="6" y="30" width="62" height="106" rx="4" fill="#eff6ff" stroke="#93c5fd"/>
+                  <path d="M36 42 L43 56 L40 78 L34 98 L28 122" stroke="#1d4ed8" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <circle cx="38" cy="74" r="4" fill="#0b2545"/>
+                  <rect x="74" y="30" width="140" height="48" rx="4" fill="#ffffff" stroke="#93c5fd"/>
+                  <rect x="82" y="38" width="66" height="8" rx="2" fill="#0b2545"/>
+                  <rect x="82" y="52" width="38" height="18" rx="2" fill="#1d4ed8"/>
+                  <rect x="126" y="52" width="38" height="18" rx="2" fill="#dbeafe"/>
+                  <rect x="170" y="52" width="38" height="18" rx="2" fill="#dbeafe"/>
+                  <rect x="74" y="84" width="140" height="28" rx="4" fill="#ffffff" stroke="#93c5fd"/>
+                  <rect x="82" y="92" width="100" height="5" rx="2" fill="#60a5fa"/>
+                  <rect x="82" y="101" width="120" height="4" rx="2" fill="#cbd5e1"/>
+                  <rect x="74" y="118" width="140" height="18" rx="4" fill="#eff6ff" stroke="#bfdbfe"/>
+                  <rect x="82" y="125" width="90" height="4" rx="2" fill="#0284c7"/>
+                </svg>
+                <span style="font-size:10px; color:var(--texto-suave);">Mapa territorial (izq.) + Ficha y fuente (der.)</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">2 · Principios (lo que no se negocia)</h2>
+            </div>
+            <div id="principlesList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </article>
+        </div>
+
+        <!-- 3 · Tokens -->
+        <article class="ds-section">
+          <div class="ds-sec-head">
+            <h2 class="ds-sec-title" id="tokensSectionHeading">
+              3 · Tokens (Modo luminoso activo): color con contraste medido, tipografía, espaciado, grilla y bordes
+            </h2>
+            <span style="font-size:11px; color:var(--texto-secundario);" id="tokensCopyHint">
+              Haz clic en una muestra para copiar su valor hexadecimal (claro)
+            </span>
+          </div>
+
+          <div class="swatch-grid-6" id="swatchesGrid"></div>
+
+          <div class="grid-3-equal">
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;">Tipografía y escala</strong>
+              <div style="display:flex; justify-content:space-between;"><span>Display</span><span class="mono-num">28px / 700</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Subtítulo / Sección</span><span class="mono-num">16–18px / 700</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Lectura</span><span class="mono-num">14px / 1.45</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Cifra</span><span class="mono-num">32px tabular</span></div>
+            </div>
+
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;">Espaciado y grilla</strong>
+              <div style="display:flex; justify-content:space-between;"><span>Escala base</span><span class="mono-num">4 · 8 · 16 · 24 · 32 px</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Escritorio</span><span class="mono-num">1400 px · 12 cols</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Tablet / Móvil</span><span class="mono-num">768 px (8) · 375 px (4)</span></div>
+            </div>
+
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;" id="borderTokensTitle">Bordes y sombras (claro)</strong>
+              <div style="display:flex; justify-content:space-between;"><span>Borde estructural</span><span class="mono-num" id="borderTokenVal">1px sólido #DCE7F3</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Radios</span><span class="mono-num">8 px / 12 px / 16 px</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Elevación activa</span><span class="mono-num" id="elevationTokenVal">1 nivel · y:10 blur:35</span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4 · Átomos + 5 · Moléculas -->
+        <div class="grid-2-equal">
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">4 · Átomos: elementos mínimos de interacción</h2>
+            </div>
+            <div class="atoms-grid-6">
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">Botón</span>
+                <button type="button" class="atom-btn" id="atomCycleBtn">Cambiar región</button>
+              </div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">Enlace verificable</span>
+                <a id="atomPdfLink" href="#" target="_blank" rel="noopener noreferrer" style="font-size:12px; font-weight:600; color:var(--azul-ine);">Boletín INE PDF ↗</a>
+              </div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">Etiqueta</span>
+                <span style="font-size:12px; font-weight:700; color:var(--celeste-claro);" id="atomTrimestreLabel">Junio–agosto 2026</span>
+              </div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">Campo / Selector</span>
+                <input type="text" readonly id="atomFieldInput" aria-label="Campo región activa" style="width:100%; border-radius:6px; border:1px solid var(--borde-acento); background:var(--superficie); color:var(--azul-tinta); padding:4px 7px; font-size:11.5px;"/>
+              </div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">Ícono funcional</span>
+                <div style="display:flex; gap:8px; color:var(--azul-ine);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+                </div>
+              </div>
+              <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between; gap:4px;">
+                <span style="font-size:10.5px; color:var(--texto-suave); font-weight:600;">La cifra</span>
+                <span class="mono-num" style="font-size:24px; font-weight:700;" id="atomBigNum">—</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">5 · Moléculas: tarjeta con fuente, selector, leyenda y uso de IA</h2>
+            </div>
+            <div class="grid-2-uneven" style="gap:10px;">
+              <div class="card-panel" style="border-color:var(--borde-acento); display:flex; flex-direction:column; justify-content:space-between; gap:8px;" aria-live="polite">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                  <label for="slide3RegionSelect" style="font-size:11px; font-weight:600; color:var(--texto-secundario);">Selector</label>
+                  <select id="slide3RegionSelect" style="border-radius:6px; border:1px solid var(--borde-acento); background:var(--superficie); color:var(--azul-tinta); padding:4px 7px; font-size:11.5px; font-weight:600;"></select>
+                </div>
+                <div>
+                  <div class="font-display" style="font-size:12px; font-weight:700;" id="molRegionName">Metropolitana</div>
+                  <div class="mono-num" style="font-size:28px; font-weight:700; color:var(--azul-ine); line-height:1.1;" id="molRegionRate">—</div>
+                  <div style="font-size:11px; font-weight:600; color:var(--celeste-claro);" id="molRegionVar">—</div>
+                </div>
+                <div style="padding-top:6px; border-top:1px solid var(--borde-suave); font-size:10px; color:var(--texto-suave);" id="molRegionSource"></div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; justify-content:space-between; gap:8px;">
+                <div class="card-panel">
+                  <strong style="font-size:11px; display:block; margin-bottom:4px;">Leyenda del mapa</strong>
+                  <div class="mono-num" style="display:flex; justify-content:space-between; font-size:10px; color:var(--texto-suave);">
+                    <span>4,0%</span><span>Desocupación</span><span>11,2%</span>
+                  </div>
+                  <div class="legend-bar">
+                    <span style="background:#dbeafe"></span><span style="background:#93c5fd"></span><span style="background:#60a5fa"></span><span style="background:#2563eb"></span><span style="background:#1e3a8a"></span>
+                  </div>
+                </div>
+                <div class="card-panel" style="font-size:10.5px;">
+                  <strong style="display:block; margin-bottom:3px;">Línea de fuente y uso de IA</strong>
+                  <p style="color:var(--texto-secundario); margin-bottom:5px;">Fuente: INE ENE n.º 335. Cifras directas sin estimación por IA.</p>
+                  <button type="button" class="dim-link" id="molTransparencyLink">Consultar declaración de IA</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- 6 · Organismos -->
+        <article class="ds-section">
+          <div class="ds-sec-head">
+            <h2 class="ds-sec-title">6 · Organismos: composición funcional con datos reales del INE</h2>
+            <span style="font-size:11px; color:var(--texto-secundario);">Cabecera · Ficha · Mapa · Tabla de regiones · Bloque de nota · Pie con IA</span>
+          </div>
+          <div class="grid-2-uneven">
+            <div class="card-panel" style="overflow-x:auto;">
+              <strong style="font-size:11.5px; display:block; margin-bottom:6px;">Organismo · Tabla comparativa de regiones</strong>
+              <table class="ds-table">
+                <thead>
+                  <tr>
+                    <th>Región</th>
+                    <th style="text-align:right;">Tasa</th>
+                    <th style="text-align:right;">Var. pp</th>
+                    <th style="text-align:right;">Informalidad</th>
+                    <th style="text-align:right;">Boletín</th>
+                  </tr>
+                </thead>
+                <tbody id="dsRegionsTableBody"></tbody>
+              </table>
+            </div>
+
+            <div style="display:flex; flex-direction:column; justify-content:space-between; gap:8px;">
+              <div class="card-panel">
+                <strong style="font-size:11.5px; display:block; margin-bottom:4px;">Bloque de nota para prensa</strong>
+                <p style="font-size:11px; color:var(--texto-secundario);" id="orgPressNote">Cargando nota...</p>
+              </div>
+              <div class="card-panel">
+                <strong style="font-size:11.5px; display:block; margin-bottom:4px;">Estructura de los 6 organismos</strong>
+                <p style="font-size:11px; color:var(--texto-secundario);">1. Cabecera y navegación · 2. Ficha regional · 3. Mapa SVG oficial · 4. Tabla de regiones · 5. Bloque de nota · 6. Pie con declaración de IA.</p>
+              </div>
+              <div class="note-box" style="flex-direction:row; align-items:center; justify-content:space-between;">
+                <span>Pie institucional: código asistido por IA · cifras 100 % INE.</span>
+                <button type="button" class="dim-link" id="orgTransparencyBtn">Transparencia</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7 · Plantillas y páginas + 8 · Estados -->
+        <div class="grid-2-equal">
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">7 · Plantillas y páginas</h2>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <div class="metric-switch" style="grid-template-columns:1fr 1fr; width:auto;">
+                  <button type="button" class="metric-btn" data-tpl="template">Plantilla vacía</button>
+                  <button type="button" class="metric-btn active" data-tpl="page">Página real</button>
+                </div>
+                <div class="metric-switch" style="grid-template-columns:1fr 1fr; width:auto;">
+                  <button type="button" class="metric-btn" data-vp="mobile">Teléfono</button>
+                  <button type="button" class="metric-btn active" data-vp="desktop">Escritorio</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:center;">
+              <div id="templatePreviewBox" class="card-panel" style="width:100%; border-color:var(--borde-acento);">
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--texto-suave); border-bottom:1px solid var(--borde-suave); padding-bottom:5px; margin-bottom:8px;">
+                  <span id="vpLabel">Escritorio (1280 px)</span>
+                  <strong style="color:var(--azul-ine);" id="tplLabel">Datos en vivo INE</strong>
+                </div>
+                <div id="tplPreviewInner"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-section">
+            <div class="ds-sec-head">
+              <h2 class="ds-sec-title">8 · Estados: sistema e interacción</h2>
+            </div>
+
+            <div class="kpi-grid-4">
+              <div class="card-panel" style="padding:8px;">
+                <strong style="font-size:10.5px; color:var(--azul-ine);">Cargando</strong>
+                <div style="height:10px; border-radius:4px; background:var(--superficie-suave); margin-top:6px;"></div>
+              </div>
+              <div class="card-panel" style="padding:8px;">
+                <strong style="font-size:10.5px;">Sin datos</strong>
+                <p style="font-size:10px; color:var(--texto-suave); margin-top:4px;">Sin registros para este filtro.</p>
+              </div>
+              <div class="card-panel" style="padding:8px; border-color:#fca5a5;">
+                <strong style="font-size:10.5px; color:#dc2626;">Error</strong>
+                <p style="font-size:10px; color:var(--texto-secundario); margin-top:4px;">Fallo de red · Reintentar.</p>
+              </div>
+              <div class="card-panel" style="padding:8px;">
+                <strong style="font-size:10.5px; color:var(--texto-secundario);">«No consta»</strong>
+                <p class="mono-num" style="font-size:10px; margin-top:4px;">Dato omitido en boletín.</p>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <strong style="font-size:11px; display:block; margin-bottom:7px;">Estados de botón (haz clic para inspeccionar):</strong>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;" id="buttonStatesGroup">
+                <button type="button" class="state-pill-btn" data-bstate="Normal" style="background:#1d4ed8; color:#fff;">Normal</button>
+                <button type="button" class="state-pill-btn" data-bstate="Encima" style="background:#1e40af; color:#fff;">Encima</button>
+                <button type="button" class="state-pill-btn" data-bstate="Activo" style="background:#0b2545; color:#fff; transform:scale(0.96);">Activo</button>
+                <button type="button" class="state-pill-btn" data-bstate="Foco" style="background:#1d4ed8; color:#fff; outline:2px solid var(--azul-tinta); outline-offset:2px;">Foco</button>
+                <button type="button" class="state-pill-btn" data-bstate="Deshabilitado" disabled style="background:var(--borde); color:var(--texto-suave); cursor:not-allowed;">Deshabilitado</button>
+              </div>
+              <p style="font-size:10.5px; color:var(--texto-suave); margin-top:7px;">
+                Estado inspeccionado: <strong id="inspectedStateLabel" style="color:var(--azul-tinta);">Normal</strong>
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <!-- 9 · Datos y voz -->
+        <article class="ds-section">
+          <div class="ds-sec-head">
+            <h2 class="ds-sec-title">9 · Datos y voz: escala cartográfica, formato editorial y textos de ayuda</h2>
+          </div>
+          <div class="grid-3-equal">
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;">Escala de color del mapa (5 tramos)</strong>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <div style="display:flex; justify-content:space-between;"><span><i style="display:inline-block;width:16px;height:10px;background:#dbeafe;border:1px solid var(--borde);vertical-align:middle;margin-right:6px;"></i><span class="mono-num">4,0% – 5,9%</span></span><span style="color:var(--texto-suave);">Menor tasa</span></div>
+                <div style="display:flex; justify-content:space-between;"><span><i style="display:inline-block;width:16px;height:10px;background:#93c5fd;border:1px solid var(--borde);vertical-align:middle;margin-right:6px;"></i><span class="mono-num">6,0% – 7,9%</span></span><span style="color:var(--texto-suave);">Moderada baja</span></div>
+                <div style="display:flex; justify-content:space-between;"><span><i style="display:inline-block;width:16px;height:10px;background:#60a5fa;border:1px solid var(--borde);vertical-align:middle;margin-right:6px;"></i><span class="mono-num">8,0% – 9,4%</span></span><span style="color:var(--texto-suave);">Intermedia</span></div>
+                <div style="display:flex; justify-content:space-between;"><span><i style="display:inline-block;width:16px;height:10px;background:#2563eb;border:1px solid var(--borde);vertical-align:middle;margin-right:6px;"></i><span class="mono-num">9,5% – 10,4%</span></span><span style="color:var(--texto-suave);">Sobre promedio</span></div>
+                <div style="display:flex; justify-content:space-between;"><span><i style="display:inline-block;width:16px;height:10px;background:#1e3a8a;border:1px solid var(--borde);vertical-align:middle;margin-right:6px;"></i><span class="mono-num">10,5% – 11,2%</span></span><span style="color:var(--texto-suave);">Mayor tasa</span></div>
+              </div>
+            </div>
+
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;">Normalización de cifras y fuentes</strong>
+              <div style="display:flex; flex-direction:column; gap:5px; color:var(--texto-secundario);">
+                <div><strong>Porcentajes:</strong> coma decimal sin espacio antes de «%» (<span class="mono-num">9,6%</span>).</div>
+                <div><strong>Variación interanual:</strong> signo explícito y unidad «pp» (<span class="mono-num">+1,0 pp</span>).</div>
+                <div><strong>Fechas y trimestres:</strong> <span class="mono-num">30-09-2026</span> · «junio-agosto 2026».</div>
+                <div><strong>Cita estándar:</strong> Institución, Boletín, edición y fecha exacta.</div>
+              </div>
+            </div>
+
+            <div class="card-panel" style="font-size:11px;">
+              <strong style="display:block; margin-bottom:6px;">Textos de ayuda para prensa</strong>
+              <p style="color:var(--texto-secundario); margin-bottom:6px;">
+                <strong>¿Por qué «pp» y no «%»?</strong> Si una tasa pasa de 8,8% a 9,8%, el alza es de +1,0 punto porcentual (pp), evitando confundir variación absoluta y relativa.
+              </p>
+              <p style="color:var(--texto-secundario);">
+                <strong>¿Cómo citar?</strong> Use siempre el enlace al boletín regional PDF para respaldar notas e investigaciones periodísticas.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <footer class="slide-footer">
+          <p class="closing-quote">
+            «Un sistema de diseño vivo asegura que cada dato público conserve su rigor técnico al llegar a redacciones y ciudadanía».
+          </p>
+          <span class="footer-tag">Referencia metodológica · Sistema INE Chile</span>
+        </footer>
+      </section>
+    </main>
+
+    <!-- AI Transparency Modal -->
+    <div class="modal-backdrop" id="transparencyModal" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle">
+      <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding-bottom:12px; border-bottom:1px solid var(--borde-suave);">
+          <div>
+            <p style="font-size:11.5px; font-weight:600; color:var(--celeste-acento);">Dimensión 10 · Accesibilidad e IA</p>
+            <h2 class="font-display" id="aiModalTitle" style="font-size:18px; font-weight:700; margin-top:2px;">
+              Fundamentación de transparencia sobre el uso de IA generativa
+            </h2>
+          </div>
+          <button type="button" class="icon-btn" id="closeTransparencyBtn" aria-label="Cerrar ventana">✕</button>
+        </div>
+
+        <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px; font-size:12.5px; color:var(--texto-secundario);">
+          <p>
+            En concordancia con los principios de trazabilidad y responsabilidad para periodistas y recolectores de información, se explicita exactamente cómo y dónde intervino la inteligencia artificial generativa:
+          </p>
+          <div class="grid-2-equal" style="gap:10px;">
+            <div class="card-panel">
+              <strong style="display:block; margin-bottom:6px; color:var(--azul-tinta);">Dónde se utilizó IA generativa</strong>
+              <p style="font-size:11.5px; margin-bottom:5px;"><strong>Código único autocontenido:</strong> Estructuración del archivo HTML, CSS y JavaScript sin dependencias externas bajo metodología Atomic Design.</p>
+              <p style="font-size:11.5px;"><strong>Conversión cartográfica:</strong> Procesamiento geométrico del shapefile oficial <span class="mono-num">Regiones__1__93b3efc9.zip</span> hacia polígonos SVG ligeros.</p>
+            </div>
+            <div class="card-panel">
+              <strong style="display:block; margin-bottom:6px; color:var(--azul-tinta);">Integridad de datos sin generación sintética</strong>
+              <p style="font-size:11.5px; margin-bottom:5px;"><strong>Cero cifras inventadas:</strong> Ningún indicador fue estimado ni completado por un modelo generativo.</p>
+              <p style="font-size:11.5px;"><strong>Fuente directa en tiempo real:</strong> Las cifras provienen exclusivamente de <span class="mono-num">workers.dev/regiones</span> (Boletín ENE n.º 335).</p>
+            </div>
+          </div>
+          <div class="note-box">
+            <p><strong>Trazabilidad garantizada:</strong> Cada cifra conserva su boletín regional oficial y enlace verificable al PDF y serie Excel del INE.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+          <button type="button" class="btn-primary-nav" id="acceptTransparencyBtn">Entendido</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const INE_API_URL = 'https://ia-toolkit.agustin-azolas.workers.dev/regiones';
+        const CHILE_GEO = {"source": "Regiones__1__93b3efc9.zip (Regional.shp, EPSG:3857)", "viewBox": "0 0 155.7 704.0", "width": 155.7, "height": 704.0, "regions": [{"codigo": "AP", "codregion": "15", "nombre_shp": "Región de Arica y Parinacota", "area_km": 16866.8, "cx": 99.5, "cy": 28.0, "bbox": [87.5, 12.0, 108.3, 42.6], "d": "M101.2,14.8L102.3,16.1L103.0,20.3L103.4,20.1L103.8,20.7L105.3,20.9L106.2,21.9L105.0,23.8L106.1,24.9L106.0,25.9L106.5,26.6L106.4,28.4L107.0,29.4L106.9,31.5L106.5,31.9L107.3,32.8L108.3,36.6L107.6,37.6L106.8,37.7L106.9,38.6L104.8,40.4L103.7,40.2L102.5,40.9L102.6,40.4L101.0,39.0L94.5,39.1L91.4,40.6L88.8,42.6L89.0,41.1L87.7,34.9L88.4,30.0L88.1,29.3L88.5,28.8L87.5,27.1L88.3,26.4L90.7,26.5L92.1,25.6L93.1,25.6L94.8,23.9L96.3,20.7L95.4,16.3L95.7,14.6L97.6,14.9L100.4,12.0L100.4,13.9L101.2,14.8Z"}, {"codigo": "TA", "codregion": "1", "nombre_shp": "Región de Tarapacá", "area_km": 42284.6, "cx": 101.1, "cy": 59.4, "bbox": [88.8, 37.4, 115.5, 85.0], "d": "M90.9,59.6L91.1,56.2L91.0,54.1L90.5,53.2L90.7,51.3L90.4,50.1L89.4,49.2L89.9,49.0L90.0,47.3L89.2,44.4L88.8,44.0L88.8,42.6L93.5,39.4L97.9,38.9L101.0,39.0L102.6,40.4L102.5,40.9L103.7,40.2L104.9,40.3L106.9,38.6L106.8,37.7L107.8,37.4L108.9,39.6L109.8,40.0L112.5,43.4L113.5,43.8L115.5,45.9L113.1,49.2L112.4,50.9L111.4,51.6L112.7,53.2L113.8,53.5L113.4,56.6L113.2,57.1L110.4,57.6L110.3,58.5L111.3,58.6L111.1,60.6L111.9,61.8L111.7,62.5L110.7,62.7L110.8,64.3L115.0,67.5L114.1,68.0L113.4,69.1L113.4,71.7L114.0,72.7L114.4,72.9L113.6,75.0L109.0,78.9L102.6,80.9L99.2,85.0L97.6,82.1L96.2,81.3L96.0,81.7L92.0,81.5L91.6,80.6L91.5,79.9L91.9,79.2L91.7,78.0L90.9,76.2L91.1,75.4L90.3,74.3L91.0,72.7L90.8,71.6L89.9,70.5L90.2,70.3L90.0,65.6L90.6,64.4L90.3,62.6L91.0,61.4L90.5,59.9L90.9,59.6Z"}, {"codigo": "AN", "codregion": "2", "nombre_shp": "Región de Antofagasta", "area_km": 126071.4, "cx": 101.0, "cy": 127.9, "bbox": [82.4, 72.7, 135.6, 163.3], "d": "M115.4,72.7L118.7,79.2L118.7,84.5L120.4,87.5L120.2,91.2L121.8,92.5L122.1,93.4L121.9,94.5L122.5,96.4L122.1,96.4L122.1,98.3L122.7,98.7L122.8,100.4L123.5,101.0L123.6,101.8L122.9,102.6L122.9,106.3L123.7,106.5L124.1,107.1L127.4,107.4L132.9,105.9L135.6,109.2L130.9,127.5L117.6,134.0L116.8,135.6L115.7,135.5L115.1,137.6L114.6,137.9L114.2,137.5L114.3,138.6L113.2,140.9L113.9,142.3L115.1,142.9L115.4,144.9L115.9,145.2L116.4,146.5L115.5,147.1L115.1,146.7L114.7,146.9L114.1,147.5L114.0,148.7L113.4,149.2L113.7,149.7L111.9,149.9L111.7,150.9L111.0,151.5L110.6,151.3L110.1,151.7L109.6,151.1L107.6,151.5L107.2,151.2L106.5,152.4L107.0,152.7L107.1,153.5L105.8,154.9L106.3,155.8L105.7,157.3L106.2,157.4L105.7,158.7L103.3,159.9L101.7,160.1L100.8,159.8L99.8,161.4L97.5,161.2L96.3,160.8L94.9,161.3L94.1,160.4L92.5,160.8L91.8,161.6L89.4,160.7L89.1,161.0L88.6,160.4L88.2,161.0L87.3,161.0L85.4,162.4L84.3,162.3L84.1,163.3L83.5,163.3L83.9,162.1L82.4,159.1L82.5,158.3L83.1,157.7L83.1,156.3L83.8,156.0L83.7,153.9L85.3,153.0L85.5,151.6L85.9,151.8L86.4,151.2L86.7,149.1L86.6,147.9L85.6,146.3L86.2,144.5L85.3,143.1L85.4,142.2L84.6,139.8L85.0,137.4L84.6,136.6L85.7,130.0L85.5,127.3L85.8,125.2L85.4,124.5L87.3,120.1L87.1,118.7L86.1,117.5L85.6,117.5L85.1,118.7L84.3,118.2L83.9,118.3L84.5,116.8L84.3,113.7L84.9,112.6L84.6,110.7L85.5,109.7L86.0,110.9L87.1,110.7L88.7,107.7L88.4,105.1L88.9,104.2L88.7,103.1L89.1,102.8L88.8,101.6L89.5,100.3L89.0,99.7L89.6,94.6L90.4,90.3L90.1,89.8L90.7,89.3L90.7,85.5L91.5,84.4L92.0,81.5L96.0,81.7L96.2,81.3L97.6,82.1L99.2,85.0L102.6,80.9L109.0,78.9L113.6,75.0L114.4,72.8L115.4,72.7Z"}, {"codigo": "MA", "codregion": "12", "nombre_shp": "Región de Magallanes y Antártica Chilena", "area_km": 133053.1, "cx": 47.6, "cy": 612.7, "bbox": [26.0, 563.4, 115.3, 655.2], "d": "M79.4,621.7L92.9,621.7L100.1,624.4L104.4,624.3L109.4,626.6L115.3,627.6L115.3,628.5L114.3,627.6L107.6,626.8L104.1,625.1L100.6,626.3L100.2,628.5L99.1,628.8L99.3,629.7L97.5,631.2L94.9,630.3L90.5,632.1L89.8,633.2L88.3,633.0L85.4,634.5L84.8,634.2L85.6,633.3L82.7,635.1L82.2,634.2L81.2,635.1L80.9,634.4L80.1,634.6L82.4,635.5L81.2,636.0L81.4,636.7L80.2,637.9L81.7,638.2L78.8,646.2L79.9,650.5L79.3,650.4L79.0,653.2L74.5,655.2L66.5,652.6L65.5,651.7L66.2,651.4L65.4,652.1L62.9,651.4L60.2,649.5L60.7,648.8L59.5,649.0L57.6,646.4L58.5,645.9L58.1,645.1L60.1,643.8L62.7,643.8L63.1,645.7L61.6,647.0L60.4,646.9L61.3,647.3L64.2,646.0L64.1,643.5L66.3,643.3L67.8,647.1L62.7,649.2L67.0,648.6L68.0,647.2L67.5,644.7L68.0,644.9L68.1,643.0L73.6,641.5L77.0,637.8L76.2,636.0L73.4,635.9L73.2,634.4L70.7,631.6L59.9,631.1L58.1,632.8L58.8,632.8L58.3,633.6L56.4,632.3L59.0,631.5L58.7,630.7L56.3,632.1L55.1,631.5L55.8,630.9L53.6,631.9L52.1,631.3L51.8,632.1L52.7,632.2L51.3,632.1L52.1,632.5L50.3,635.0L52.3,632.6L54.9,633.7L52.1,636.1L51.1,635.6L51.4,636.1L49.3,636.8L51.1,637.7L50.4,640.7L49.6,640.1L49.9,640.6L48.3,641.4L47.6,640.4L48.3,639.9L47.3,639.7L47.9,641.0L47.2,641.3L43.9,639.7L46.2,639.6L44.7,639.0L46.9,639.0L46.3,638.5L48.2,638.0L46.4,638.3L45.9,637.9L46.3,637.5L45.5,637.9L45.1,637.1L42.1,636.1L44.2,636.2L43.5,636.6L44.7,635.7L44.7,636.6L47.0,635.9L46.8,635.1L46.0,635.6L46.8,634.0L45.9,634.2L44.9,631.6L45.5,633.6L44.7,634.1L45.6,633.9L44.9,634.6L44.1,634.4L45.1,633.4L44.2,633.8L44.0,633.1L43.7,633.9L42.8,633.5L43.1,634.3L41.1,634.6L42.0,635.0L41.8,635.5L41.0,634.5L41.1,635.1L40.0,635.0L42.4,633.3L40.8,633.1L41.4,632.1L42.3,632.1L41.4,631.4L42.8,632.1L42.0,630.9L42.6,630.3L43.8,630.8L42.6,630.1L43.2,629.2L42.3,630.1L41.0,629.3L41.2,628.6L42.4,628.6L42.0,627.7L42.7,627.7L41.7,627.0L42.4,625.4L41.8,625.5L41.8,624.5L41.3,624.8L39.8,622.4L40.8,622.3L42.6,625.0L43.5,624.7L42.9,624.1L43.8,624.0L45.1,625.6L46.6,625.2L47.0,623.6L48.0,624.2L50.2,622.7L50.0,624.3L48.2,624.3L49.4,624.5L48.3,625.8L50.3,624.9L51.2,625.7L50.3,627.1L51.6,626.9L52.9,623.2L53.9,623.1L52.5,623.2L51.5,625.6L50.7,624.8L50.8,622.6L51.5,623.1L51.7,621.3L53.5,620.8L54.3,623.3L55.1,624.1L55.6,623.7L57.0,625.6L55.6,628.4L54.3,627.9L53.0,628.8L53.3,629.2L52.3,628.8L52.6,629.5L50.3,630.4L54.0,629.3L56.5,630.3L57.1,629.6L54.6,629.0L56.6,628.4L57.7,625.5L55.0,622.6L55.0,621.2L55.6,620.1L56.3,621.2L56.3,620.3L57.9,620.3L57.1,618.8L58.0,617.7L57.1,616.4L55.2,615.7L54.7,614.0L55.0,615.6L54.4,614.1L49.2,612.4L48.7,609.9L49.1,611.2L46.4,612.5L47.3,613.0L49.4,612.7L49.8,613.4L48.6,614.7L50.2,613.0L53.8,614.7L54.7,616.3L57.0,617.0L55.8,618.4L54.0,618.9L52.8,617.4L50.7,617.7L49.0,615.9L47.5,616.1L47.3,614.6L46.9,615.0L46.1,614.1L47.1,615.5L46.2,616.2L48.9,616.3L50.2,617.9L47.9,617.6L49.2,617.4L49.7,618.5L47.3,619.8L48.8,619.7L50.5,618.1L51.5,619.1L48.5,620.6L48.4,623.1L47.0,623.4L46.1,620.0L46.6,619.6L44.6,615.3L45.9,619.0L45.3,618.8L46.3,624.5L43.5,622.5L42.8,622.8L41.7,620.6L42.5,620.5L41.1,619.3L41.8,618.1L43.3,620.6L42.7,620.6L44.3,621.6L43.4,619.9L44.3,620.0L43.4,619.8L42.5,618.3L43.2,618.1L41.8,617.2L43.9,615.9L41.7,616.7L41.4,615.3L40.2,618.0L39.7,616.5L38.7,616.5L39.2,616.0L38.5,615.8L39.8,615.4L37.2,615.0L37.3,614.1L38.7,614.5L38.0,613.7L39.3,613.6L37.4,613.7L37.2,612.5L36.4,613.0L37.6,612.3L36.9,611.8L37.4,611.3L36.6,611.3L37.5,610.5L38.8,611.0L39.6,612.4L39.8,611.8L40.9,614.7L41.9,614.9L40.6,612.4L42.0,613.6L41.2,612.1L42.3,612.0L40.6,611.7L40.1,609.6L40.7,609.2L39.2,608.0L40.0,607.3L40.8,609.0L40.4,607.7L41.0,607.6L40.2,607.1L40.7,606.5L40.0,606.9L38.5,605.1L39.4,607.3L37.5,608.6L36.0,605.8L36.0,607.6L35.0,607.7L34.2,605.9L35.0,605.1L34.4,605.8L34.0,605.2L35.5,604.0L34.9,603.7L35.5,603.1L33.3,605.0L32.6,603.1L33.6,601.8L37.1,602.3L37.4,601.7L38.0,601.8L37.9,602.9L40.3,603.3L40.7,602.8L39.4,602.8L37.8,601.3L38.4,600.5L40.0,600.9L39.1,600.5L38.9,598.4L41.1,597.5L42.5,598.7L42.6,598.1L43.6,598.2L39.6,595.9L40.2,595.0L42.1,594.7L42.3,593.0L41.2,595.0L39.3,595.6L38.6,600.0L35.6,601.4L34.2,599.9L35.3,598.6L34.2,598.5L34.2,599.7L32.8,596.7L33.7,596.0L34.8,596.6L34.1,595.9L32.7,596.2L31.8,594.6L33.5,594.6L33.9,595.8L34.5,595.3L33.7,594.8L36.1,595.7L36.2,596.9L36.4,595.7L38.0,596.1L35.9,595.4L35.8,594.3L35.4,595.1L33.8,594.0L36.5,592.8L32.5,594.2L31.4,593.5L32.5,591.9L31.9,590.6L31.3,593.1L30.6,592.7L31.0,593.5L29.4,592.5L30.0,591.9L28.3,591.8L29.5,591.0L27.0,590.5L27.9,589.4L26.9,590.2L26.0,589.9L27.9,588.2L28.7,588.4L28.1,589.0L29.0,588.8L28.6,587.7L30.3,588.2L30.5,587.8L29.2,587.5L27.3,588.1L29.9,586.6L30.9,587.4L30.9,588.6L31.1,587.7L32.3,588.6L31.2,589.6L32.5,588.9L32.3,589.8L33.7,591.3L34.7,590.3L36.5,591.3L35.8,590.1L33.7,590.0L33.1,589.1L33.8,588.6L33.2,588.9L32.7,587.5L32.0,587.6L31.0,585.9L31.6,585.0L31.8,585.9L33.0,585.3L33.3,586.1L35.6,586.7L35.6,587.4L36.2,586.8L36.4,587.6L36.3,586.9L38.0,587.0L37.9,586.4L35.8,586.3L36.8,585.0L38.8,584.9L37.5,584.8L38.7,583.4L37.3,584.9L36.4,584.7L35.7,586.0L33.7,584.5L32.1,584.7L31.4,584.2L31.5,582.5L32.3,582.8L33.6,581.9L35.5,582.2L35.8,581.4L32.0,582.2L31.7,580.1L35.1,578.2L36.3,578.8L35.6,580.2L37.4,578.4L39.0,581.3L39.0,580.3L39.8,580.4L38.8,580.1L37.4,577.7L35.0,577.6L35.9,573.2L39.5,576.0L39.1,574.8L37.2,573.7L37.2,574.2L35.8,572.3L35.0,573.0L33.8,572.2L34.7,573.4L33.7,578.2L32.3,577.2L32.0,575.9L31.4,576.2L30.5,575.5L31.3,571.7L31.1,569.6L30.3,570.1L30.1,568.4L31.0,568.4L30.7,567.3L31.9,567.5L30.3,566.5L31.2,566.2L30.3,565.2L31.2,563.6L32.3,564.5L32.0,564.0L33.8,563.4L36.4,563.6L48.2,572.4L48.3,573.4L49.6,573.5L49.1,573.7L49.5,576.9L47.2,580.5L43.3,583.0L42.4,584.7L42.3,585.4L43.8,585.6L44.0,586.5L42.8,589.0L44.1,589.5L43.8,590.6L45.1,591.7L44.0,592.7L45.0,592.9L45.5,596.4L48.2,597.8L47.4,600.8L54.1,597.2L56.0,598.4L57.5,597.0L60.4,598.0L59.5,599.6L60.9,601.9L60.7,604.6L59.1,604.4L58.6,605.9L60.8,608.5L59.2,609.9L60.1,610.5L59.8,612.4L58.2,614.3L59.8,614.4L60.2,616.4L62.7,617.2L65.2,619.4L65.5,620.2L64.0,620.9L64.3,621.3L79.4,621.7Z M82.8,663.2L84.7,663.3L82.8,664.7L82.0,668.0L82.7,666.8L84.0,667.7L82.8,666.5L84.9,664.1L89.5,667.4L90.1,667.3L88.6,665.9L91.4,666.9L85.6,663.9L85.4,662.4L80.4,661.5L79.9,660.0L80.7,660.0L79.5,659.1L88.9,663.1L91.0,664.7L90.7,663.8L92.3,663.8L90.0,662.6L91.7,661.5L93.0,661.8L93.8,662.5L93.3,663.7L94.2,663.7L94.1,664.7L95.5,665.0L94.1,666.2L95.7,665.3L96.5,666.2L94.8,667.3L96.1,666.6L96.7,667.3L96.2,667.7L96.9,665.9L94.7,662.7L95.0,662.1L98.4,663.5L97.9,665.0L98.7,665.8L98.5,664.1L100.1,664.8L99.2,664.2L99.3,663.0L100.6,663.1L104.2,665.0L101.2,668.5L99.7,668.9L101.6,668.4L102.2,669.8L101.7,668.3L104.0,666.3L105.2,667.1L104.6,666.0L105.2,665.0L107.7,665.4L104.9,663.6L94.0,659.9L91.8,658.2L92.3,658.0L90.9,655.9L90.4,653.0L94.2,651.0L97.5,650.8L102.0,648.6L102.6,647.1L101.8,645.7L98.9,645.5L94.5,646.1L89.8,647.8L86.5,646.0L86.6,644.9L87.7,644.7L86.3,644.7L86.9,639.6L88.3,638.8L88.0,640.5L89.3,640.4L90.9,639.6L91.6,638.1L91.1,637.4L88.6,637.8L88.9,635.9L86.6,635.5L90.8,634.6L92.2,636.1L94.0,636.6L97.1,635.0L98.7,633.1L98.5,631.3L100.9,629.7L105.3,634.0L110.1,632.4L110.7,631.4L112.6,633.3L112.6,672.8L109.5,671.7L111.2,673.1L105.9,674.1L101.2,672.8L101.6,672.5L97.8,672.0L98.7,670.7L98.3,669.9L97.6,671.2L97.0,669.4L97.3,671.8L96.2,671.8L96.7,670.5L95.9,669.9L96.6,670.7L96.1,671.8L94.0,672.0L93.2,669.9L93.7,669.0L93.0,669.8L93.6,672.0L91.6,672.3L91.9,671.0L90.6,671.0L91.5,671.8L89.5,671.8L90.5,672.5L88.3,672.2L88.1,671.3L90.4,669.3L89.6,669.2L87.9,671.9L84.5,670.7L83.7,671.6L87.6,672.4L83.3,673.1L82.3,672.3L82.7,671.9L80.7,671.6L82.5,670.0L79.4,670.3L82.0,669.1L79.8,668.9L78.8,671.1L78.3,670.7L79.2,669.7L79.1,669.0L78.4,669.1L79.7,667.9L78.0,667.8L77.8,668.7L75.6,669.3L75.6,668.8L74.2,668.6L76.7,668.0L75.1,667.9L75.1,667.1L74.4,667.4L73.8,666.2L74.1,667.3L72.7,667.1L73.9,668.0L72.7,667.7L73.0,668.6L72.2,668.1L71.6,669.1L71.9,667.3L71.0,668.6L70.2,668.4L70.6,667.8L69.7,668.2L70.7,667.3L70.1,667.7L69.8,667.1L69.2,668.7L68.9,667.7L69.6,667.3L67.4,667.1L68.5,667.8L66.4,667.4L67.5,668.2L65.7,668.4L64.8,667.7L66.4,667.8L65.3,667.0L65.9,666.7L65.0,667.0L64.2,666.1L65.2,666.4L64.5,665.0L65.8,664.9L66.1,666.0L66.7,665.2L67.1,666.5L69.3,667.1L67.8,665.7L71.3,666.7L66.2,664.4L68.3,664.0L71.2,666.1L71.2,665.5L72.6,665.7L70.3,665.1L69.9,664.0L71.6,664.7L71.0,664.3L71.5,664.0L73.5,665.2L74.2,664.5L72.6,664.1L73.6,663.5L78.7,665.1L79.8,664.6L79.6,663.5L80.4,663.0L82.8,663.2Z M114.0,673.4L116.4,674.5L116.6,676.1L115.0,675.1L115.5,676.3L112.2,676.4L113.6,676.9L112.4,677.6L106.9,675.1L106.1,676.1L107.5,676.0L107.5,676.7L110.8,678.0L111.4,677.7L110.1,677.4L116.4,677.9L117.8,678.7L116.6,678.8L118.8,679.9L114.3,679.7L114.9,680.1L113.7,680.4L112.1,679.2L111.0,679.6L112.3,679.5L112.6,680.9L113.8,680.6L113.1,681.3L115.8,680.7L117.5,681.3L116.9,681.9L119.4,681.6L119.7,682.1L118.8,683.1L120.7,682.9L119.6,684.0L121.6,685.1L120.8,686.1L121.5,686.6L120.3,687.3L119.4,686.5L119.5,685.2L117.4,685.7L118.2,684.1L116.4,682.8L115.0,683.4L112.8,681.7L113.3,683.0L111.3,683.0L110.6,682.3L110.8,683.0L110.1,683.1L110.9,683.5L110.3,683.7L108.8,683.2L109.4,682.8L108.2,682.9L108.0,682.3L109.2,681.6L111.5,681.5L110.4,681.5L110.6,680.8L108.0,681.8L109.4,680.4L108.9,679.7L109.8,679.0L109.1,678.8L110.3,678.0L107.7,678.8L107.7,679.7L106.4,679.6L105.9,677.5L105.2,678.3L105.7,679.4L103.1,678.0L103.9,679.1L100.2,679.4L101.3,679.3L100.5,680.1L103.5,680.9L103.0,681.6L104.5,682.3L103.4,683.0L106.0,683.1L105.0,683.2L106.1,683.7L105.7,684.2L104.5,683.4L103.0,683.8L102.4,682.1L102.0,684.5L101.0,682.7L101.5,682.4L100.2,682.5L102.1,681.8L100.2,681.9L100.6,681.2L99.6,682.1L98.4,681.6L99.9,681.0L95.9,680.8L97.6,680.6L96.5,680.1L99.6,680.1L97.5,679.9L100.3,678.2L94.9,680.1L94.3,679.8L95.2,679.4L93.2,679.2L95.1,679.0L93.5,678.9L93.3,678.3L95.7,678.2L92.4,678.0L94.1,676.3L97.0,676.0L97.3,676.8L98.2,676.8L97.5,676.2L99.0,675.6L99.6,677.5L98.8,678.0L99.3,678.0L99.3,675.5L101.3,675.3L100.6,676.1L102.5,676.0L101.7,675.2L103.9,674.7L104.7,675.4L104.7,674.6L106.8,674.9L114.0,673.4Z M72.0,633.3L73.0,634.4L72.5,634.8L72.8,636.4L65.7,639.4L64.1,641.7L62.6,641.9L61.1,640.4L59.4,640.0L61.1,641.6L58.7,640.1L55.9,640.7L59.0,640.9L61.5,642.8L59.2,642.5L58.7,642.9L59.9,643.3L59.3,643.6L58.1,642.7L57.0,642.7L58.1,643.6L55.6,642.9L58.5,643.9L57.6,644.8L56.5,644.2L57.2,645.6L56.7,646.0L54.8,645.5L56.2,646.4L55.9,647.0L57.1,646.5L58.9,648.8L56.5,648.9L56.9,648.2L55.2,647.9L55.9,647.5L54.2,647.5L53.6,646.4L53.1,647.0L53.0,646.0L51.5,646.1L52.0,645.6L48.0,644.2L45.8,642.3L48.5,643.1L51.1,642.4L51.3,643.1L53.7,643.6L53.8,644.9L54.7,643.9L52.3,642.7L54.2,643.0L53.0,642.2L55.0,642.1L54.0,642.0L54.0,641.3L52.3,642.1L50.6,641.3L52.4,640.0L51.4,640.3L50.8,638.3L51.6,638.0L50.1,636.8L53.3,635.5L53.0,636.3L54.7,634.5L55.9,635.3L54.2,637.7L56.3,635.9L57.0,636.0L55.4,637.2L57.5,636.3L58.2,637.3L58.3,636.2L62.1,633.1L63.8,633.7L64.9,633.1L67.6,634.1L72.0,633.3Z M18.2,579.6L17.6,579.4L19.8,577.6L18.3,578.5L17.5,578.1L19.2,577.1L18.5,577.1L19.0,576.4L17.4,577.8L17.0,576.9L17.8,576.1L16.3,577.2L17.5,575.4L16.1,576.5L15.4,573.5L17.2,573.1L15.9,574.4L17.3,573.5L18.6,576.3L20.5,577.2L19.0,576.0L22.5,575.6L18.9,575.9L19.8,575.6L18.4,575.3L17.9,574.2L19.0,574.4L17.9,574.1L17.5,573.2L18.4,573.3L17.5,573.1L18.8,572.7L18.7,573.7L18.8,573.0L20.3,575.1L21.5,574.8L20.2,574.6L19.9,573.9L20.6,573.7L19.4,573.1L21.8,574.5L20.6,573.1L21.4,572.9L22.3,573.8L21.5,572.8L22.2,573.0L20.9,571.7L23.7,574.0L23.8,575.2L24.0,572.4L25.2,572.9L24.1,571.8L25.4,572.0L24.6,570.5L25.7,570.2L23.2,568.5L24.8,567.7L26.0,569.1L25.0,568.1L25.2,567.2L22.7,568.2L23.6,567.5L22.5,567.4L24.3,566.5L22.4,567.1L22.1,566.5L24.8,565.1L22.1,566.3L21.9,564.6L23.9,565.6L22.8,564.8L23.4,564.2L22.3,564.3L25.1,562.8L25.5,563.5L25.1,564.0L24.6,563.6L24.7,564.3L25.4,565.0L25.3,563.0L26.3,562.5L27.7,563.4L27.1,563.9L28.0,563.9L27.2,566.3L28.0,565.6L28.3,563.8L29.4,563.3L29.4,566.4L27.8,567.8L29.5,566.6L30.3,567.7L28.7,568.9L29.6,569.0L30.3,570.3L30.5,574.0L29.7,577.2L28.2,577.7L29.2,577.7L29.7,579.4L28.1,579.9L28.4,580.9L28.8,579.7L30.5,580.7L30.4,582.3L28.3,581.7L30.3,582.5L30.3,584.6L29.2,583.5L29.9,584.9L28.9,586.0L27.1,584.2L28.8,586.1L27.0,587.4L26.2,587.0L27.0,586.1L25.3,587.2L24.6,586.9L25.3,586.1L24.8,586.2L24.7,587.3L23.5,586.2L25.9,584.7L27.3,585.5L26.8,584.6L23.7,585.9L23.1,585.2L23.7,583.6L25.1,584.1L27.3,582.7L24.5,583.7L24.7,582.4L26.0,581.4L24.2,583.1L23.4,581.7L24.3,581.4L23.1,580.6L23.5,580.1L24.6,580.6L23.6,579.2L26.4,579.9L25.1,579.5L25.7,578.4L24.9,579.5L23.7,578.9L23.6,578.0L25.4,576.8L26.1,577.8L25.4,576.8L27.4,576.2L26.0,576.0L27.7,574.1L25.9,575.8L24.6,574.5L25.8,576.0L23.8,577.6L23.9,575.5L23.7,577.5L22.8,578.2L22.7,576.2L22.5,577.4L21.9,577.1L22.4,578.2L21.5,577.7L22.2,579.1L20.6,578.1L22.2,579.4L21.4,579.7L22.1,579.8L21.7,581.0L22.3,579.5L22.9,579.7L21.6,581.4L21.8,582.7L22.3,581.2L23.0,581.9L21.6,583.9L22.2,584.0L21.9,584.5L20.9,584.6L21.4,583.4L20.0,583.7L19.3,582.3L20.1,581.9L19.2,582.1L18.6,580.8L19.7,580.5L18.2,580.3L19.7,580.2L18.5,580.0L19.8,578.8L18.2,579.6Z M26.3,634.3L29.9,636.3L28.8,636.8L30.1,636.6L29.2,637.0L30.2,637.6L30.8,637.2L30.2,638.1L31.4,639.0L31.4,638.1L32.4,639.2L32.6,638.3L34.7,639.5L34.3,638.3L35.3,639.3L36.9,639.3L37.1,639.9L36.2,639.9L37.3,640.6L37.5,639.7L38.6,641.0L38.5,640.1L39.8,640.6L41.3,642.6L41.0,640.9L41.7,640.8L41.5,641.6L42.3,641.3L42.7,642.3L41.9,642.6L42.7,644.3L43.3,644.4L43.0,643.5L44.1,643.7L43.1,643.3L43.5,641.9L44.7,642.5L43.7,642.7L45.0,642.8L44.1,643.1L45.8,643.5L44.9,644.3L46.2,644.1L48.9,646.0L47.0,646.1L44.5,644.9L44.0,645.6L41.6,645.3L41.4,644.6L43.7,644.9L41.7,644.3L42.2,643.6L40.1,641.9L40.3,642.6L39.5,642.8L40.1,642.4L39.3,642.5L39.0,641.1L38.9,642.4L37.5,640.6L36.5,641.2L34.5,640.4L36.3,641.3L35.0,641.8L34.1,640.9L34.2,641.6L33.3,641.5L32.5,640.0L32.8,641.9L32.2,641.0L31.5,641.6L31.4,639.8L30.8,640.8L30.2,639.3L28.6,638.8L29.3,637.8L28.3,638.7L27.2,637.8L27.9,637.5L27.0,636.6L28.3,637.0L25.9,635.8L25.6,634.6L26.5,634.8L26.3,634.3Z M49.7,646.0L50.2,648.1L50.4,646.4L51.6,647.1L51.2,648.8L51.7,648.1L52.4,648.4L51.3,649.1L52.4,648.8L51.7,649.4L52.1,650.5L51.3,650.8L52.3,651.1L52.2,650.2L52.9,650.1L52.3,647.3L54.1,648.3L54.8,650.8L55.0,648.6L57.9,649.6L57.6,650.6L59.0,650.6L55.6,651.2L55.6,652.1L57.0,651.8L55.7,652.0L55.9,651.3L57.9,651.3L57.9,652.7L58.9,651.3L61.1,652.2L59.4,652.7L62.2,653.1L60.3,653.6L61.7,654.0L61.2,654.5L59.2,653.6L57.7,654.1L59.5,654.4L59.7,655.7L57.7,655.1L59.3,656.2L57.6,656.3L59.4,656.7L59.3,658.0L57.7,658.2L56.6,656.9L56.6,659.0L55.5,658.7L55.9,657.6L54.9,658.6L55.5,657.3L54.7,658.6L53.7,658.7L54.3,659.0L52.9,658.7L52.7,659.4L50.7,659.2L51.9,659.1L51.3,658.9L51.7,658.5L49.1,658.6L52.5,658.3L50.7,657.5L53.7,658.1L53.2,657.3L52.1,657.4L53.4,657.0L52.0,656.6L54.6,656.7L53.0,656.0L55.2,654.8L54.4,654.5L53.1,655.5L54.3,654.2L53.7,654.1L52.3,655.0L54.0,652.8L53.0,653.6L52.6,652.8L51.5,655.2L50.7,655.2L51.1,654.6L49.6,655.4L50.2,654.6L49.7,654.7L50.6,654.5L49.9,654.4L51.5,654.2L49.4,653.9L53.0,652.5L52.5,652.4L52.9,651.8L52.1,652.3L48.1,651.4L47.2,652.2L47.7,651.2L50.9,651.2L51.2,650.4L48.9,650.9L50.0,649.4L48.6,650.7L46.7,650.5L47.1,650.0L46.4,649.7L47.2,649.3L45.7,649.3L44.1,647.6L46.0,647.8L47.0,648.8L47.6,647.8L49.8,648.9L48.4,647.9L48.9,647.4L48.0,646.8L48.6,646.5L47.8,646.4L49.7,646.0Z M121.5,672.8L132.4,673.8L134.7,676.2L134.8,677.5L131.7,680.5L129.3,680.3L128.8,679.5L129.6,678.2L128.4,677.8L127.0,678.2L126.7,679.6L124.9,679.1L123.5,679.6L123.0,678.6L125.0,678.8L123.0,677.9L120.9,678.9L119.6,678.6L119.6,677.7L120.5,677.8L119.1,677.2L118.8,674.5L116.9,674.7L115.9,673.7L121.5,672.8Z M65.6,654.3L66.9,655.3L66.6,656.7L67.4,655.0L67.9,655.7L68.2,655.2L69.4,655.7L68.7,656.8L67.8,656.7L68.8,657.0L68.8,658.0L67.7,657.9L68.7,658.1L68.2,658.8L69.2,658.1L69.9,658.6L68.0,660.0L65.6,658.1L65.7,657.2L65.1,657.8L66.2,658.8L65.6,659.3L66.5,659.2L68.3,661.3L65.9,662.1L67.4,663.0L64.9,662.9L66.0,661.0L62.4,660.6L62.3,659.9L64.4,659.4L62.1,659.2L63.7,658.8L62.6,657.6L61.8,658.9L60.8,658.6L61.4,659.5L60.7,660.6L59.7,660.6L59.9,661.7L58.5,661.4L59.7,661.9L58.9,662.9L60.1,663.4L58.2,663.5L58.0,664.8L57.3,664.5L56.7,663.2L58.6,663.2L59.0,661.8L57.6,661.9L57.7,662.9L57.4,662.0L55.9,661.7L57.1,661.0L57.1,660.2L59.6,659.7L58.3,659.8L58.4,659.3L60.2,658.8L58.4,658.7L61.3,658.2L61.0,657.5L61.9,656.6L60.8,657.1L60.4,655.6L62.6,655.9L64.5,657.4L62.8,656.0L64.9,656.7L63.5,656.1L63.9,655.2L65.2,655.4L64.6,654.6L65.6,654.3Z M86.1,649.3L87.0,653.6L86.4,653.5L86.9,654.8L86.4,654.9L88.1,657.4L86.6,658.1L83.2,655.7L84.9,657.7L85.1,658.9L84.4,658.9L85.6,659.4L85.3,660.7L86.0,661.0L85.6,659.5L88.8,660.4L88.6,661.3L89.8,661.3L89.2,662.0L83.3,660.6L80.3,658.1L80.0,655.8L80.8,655.9L80.0,654.9L81.7,653.9L84.1,654.7L84.3,653.9L82.7,653.1L82.7,651.7L86.1,649.3Z M70.3,655.9L71.5,657.2L71.4,656.1L72.4,656.1L71.8,657.1L72.8,657.0L72.9,658.7L73.1,656.5L74.8,657.0L75.2,658.6L74.4,659.0L75.6,659.1L75.7,660.8L75.9,658.9L76.6,658.6L76.9,659.9L77.5,658.1L78.6,658.6L78.8,659.5L77.6,660.6L78.1,660.9L79.0,659.9L79.0,661.3L78.1,661.3L79.1,661.9L77.9,662.3L78.1,663.1L76.6,662.3L77.8,663.1L77.4,664.0L76.6,664.1L76.2,662.9L76.1,663.7L73.6,662.6L73.5,662.1L75.7,662.2L75.3,661.5L76.2,661.3L75.1,660.7L74.9,661.6L73.9,661.7L73.8,660.8L73.4,661.7L72.2,660.7L73.5,659.5L72.8,659.8L73.1,659.1L72.4,659.7L71.1,659.3L72.2,659.8L71.2,660.3L71.8,661.6L72.1,661.1L73.0,661.7L72.9,663.0L71.3,662.7L71.6,661.0L71.2,662.0L70.4,661.7L70.3,660.6L71.2,660.3L70.1,660.4L70.2,661.3L69.1,661.1L68.6,659.7L70.6,658.5L69.4,657.3L70.3,655.9Z M17.6,586.2L17.5,587.4L17.7,586.7L18.2,587.6L18.7,586.6L19.8,586.6L20.5,587.4L19.9,588.1L20.8,587.6L20.6,588.3L20.8,587.7L21.4,588.8L22.5,587.5L22.8,588.1L21.1,589.6L22.8,588.2L22.6,589.5L23.3,588.6L23.7,589.4L23.6,588.6L24.5,589.0L23.6,588.2L25.1,588.9L24.9,589.7L23.5,589.7L24.5,590.0L23.5,590.4L24.2,590.6L22.1,589.9L21.0,591.1L22.2,590.2L22.7,590.9L20.4,591.9L20.8,592.3L20.2,592.8L19.6,592.4L18.9,594.2L19.6,593.3L20.7,593.4L19.7,594.7L17.0,594.1L19.2,591.5L17.9,592.6L17.3,592.6L18.3,591.8L17.8,591.6L15.1,592.7L15.3,591.1L16.2,590.9L15.6,590.4L15.9,589.3L16.6,588.9L18.3,589.6L16.9,589.7L17.1,590.4L19.9,590.9L19.5,590.1L20.5,588.6L19.4,589.5L16.0,587.6L15.9,586.8L17.6,586.2Z M86.6,673.8L85.4,673.9L85.8,674.6L83.8,674.7L85.7,675.1L82.1,674.9L84.4,675.6L85.6,675.2L85.5,675.9L88.6,675.4L88.6,676.0L87.2,676.2L88.3,676.2L88.6,677.0L86.1,676.4L86.2,677.2L87.6,677.5L86.1,678.4L85.7,677.5L84.7,677.4L85.5,678.1L85.1,678.4L84.4,677.9L84.6,676.9L85.2,677.0L84.4,675.8L83.4,675.7L84.2,676.3L83.2,676.0L82.7,677.0L81.8,676.7L82.5,676.0L82.0,675.6L81.0,676.4L80.3,675.6L79.5,676.3L79.0,675.5L78.2,675.7L78.9,675.3L78.1,675.1L79.0,674.6L78.4,674.0L80.5,673.4L80.5,674.4L81.5,674.3L81.6,673.4L82.6,674.0L82.0,674.3L83.5,674.5L84.7,674.4L84.1,673.6L85.6,672.9L88.4,673.0L86.6,673.8Z M97.5,672.6L100.2,673.2L99.4,674.1L100.6,673.1L105.2,674.1L93.8,675.9L94.4,675.2L93.6,674.1L95.6,674.1L93.7,673.2L95.7,672.7L96.3,674.5L97.6,674.1L96.7,673.5L97.7,673.7L96.3,672.7L97.5,672.6Z M27.0,598.9L27.7,599.7L30.0,600.0L28.7,601.5L30.4,600.8L30.7,602.0L29.7,602.9L30.7,602.5L30.7,605.5L29.5,603.8L27.7,605.0L27.5,604.3L26.2,606.1L25.4,605.8L25.2,605.2L26.2,605.2L25.4,604.6L26.9,604.6L27.5,603.3L26.7,604.2L25.2,603.8L24.7,605.5L24.2,605.2L24.8,604.9L23.4,605.0L25.1,603.8L24.3,603.6L25.1,603.6L23.6,603.6L24.5,603.3L23.5,603.0L22.5,603.8L22.7,602.5L23.9,602.5L22.8,601.9L26.6,602.3L27.0,603.2L27.5,602.3L28.5,602.6L27.7,602.2L28.2,601.9L27.2,602.2L27.5,601.4L27.0,602.2L27.3,600.9L27.8,601.6L28.7,600.7L28.0,601.0L26.3,599.4L27.0,598.9Z M32.7,601.3L32.6,599.6L31.8,600.7L31.3,599.8L32.0,601.3L31.2,601.3L30.0,599.8L30.7,599.4L28.9,599.3L29.4,598.9L28.5,598.7L29.3,598.2L28.2,598.6L28.3,597.9L27.4,597.8L30.1,596.0L29.5,595.6L30.7,596.4L31.0,595.8L29.0,595.4L29.4,594.8L28.7,595.4L26.2,595.0L28.3,593.6L29.4,594.7L31.0,594.5L31.7,597.4L33.1,598.4L30.3,597.9L33.6,599.5L34.0,601.3L32.7,601.3Z M18.6,564.6L21.6,566.4L21.0,567.0L20.0,566.6L20.2,567.0L21.9,567.5L19.9,568.6L19.0,567.0L18.9,568.4L19.8,568.7L18.9,569.7L18.1,569.0L18.2,567.0L17.2,567.7L17.3,567.1L15.5,569.3L14.1,568.2L15.4,568.0L15.7,567.1L14.7,568.0L12.9,567.5L12.8,566.0L14.1,565.2L14.3,565.9L14.8,564.8L16.3,565.2L14.5,566.6L17.0,565.0L16.2,566.4L16.9,565.6L16.7,566.6L17.3,566.3L17.8,567.0L17.2,565.2L18.7,565.9L19.0,566.9L18.6,564.6Z M33.1,623.1L35.0,623.4L35.7,624.0L35.1,624.7L35.9,624.1L39.6,626.5L39.1,627.7L39.8,627.5L40.0,629.1L37.8,628.6L39.5,628.0L36.4,626.5L35.2,624.7L34.0,624.3L34.5,624.0L32.7,623.5L33.1,623.1Z M35.3,613.4L35.6,614.0L34.9,613.9L36.4,616.4L35.2,616.8L36.9,616.8L37.3,617.7L36.6,618.2L37.4,617.9L38.6,618.9L38.6,620.3L36.6,619.8L37.1,619.2L36.2,618.5L36.8,618.3L32.5,616.8L33.3,616.8L32.7,616.0L33.7,616.4L33.6,615.5L34.9,616.0L34.1,615.8L34.6,615.4L33.9,614.5L35.1,614.9L34.3,613.6L35.3,613.4Z M27.4,607.3L28.8,609.3L28.1,608.2L28.5,609.6L26.5,608.3L27.9,609.1L28.3,610.8L27.3,611.2L26.7,609.3L25.7,609.2L26.3,609.7L25.3,611.5L24.9,610.9L24.5,612.0L23.4,612.3L23.4,611.5L23.4,612.1L21.3,612.4L22.0,611.8L21.4,611.6L24.9,609.8L22.3,610.8L23.1,610.5L22.1,610.1L22.8,609.2L24.7,609.1L23.9,608.6L24.4,608.0L25.1,608.3L24.7,607.7L25.8,608.1L25.8,607.4L27.4,607.3Z M14.2,581.0L13.3,579.7L14.4,578.9L15.4,579.5L15.5,578.7L16.7,579.5L16.8,578.8L19.7,584.5L17.9,583.0L18.4,584.2L16.9,583.8L16.8,580.8L16.4,581.9L13.1,583.7L12.8,582.1L15.0,581.0L14.2,581.0Z M32.1,623.3L35.3,625.5L37.4,628.1L32.9,625.3L35.3,625.8L32.8,624.4L31.8,624.3L33.2,625.1L32.5,625.2L30.0,624.3L32.1,623.3Z M16.6,594.5L17.0,595.4L17.1,594.7L18.0,594.9L17.6,595.7L18.3,594.9L21.0,595.2L19.4,595.9L19.7,596.4L18.4,596.1L19.4,596.8L18.9,597.3L17.9,596.6L18.1,595.9L17.3,596.1L18.6,597.6L17.4,597.6L18.5,598.8L17.3,598.9L18.5,599.5L17.6,600.6L17.4,599.6L16.5,600.3L15.7,599.8L16.3,599.4L15.4,599.4L15.5,598.7L17.0,598.4L14.6,598.1L16.2,597.7L15.2,597.2L15.8,596.8L17.0,597.5L16.2,596.8L17.3,596.9L15.1,595.2L16.6,594.5Z M35.4,619.9L36.4,620.6L36.1,621.6L36.9,621.3L36.6,620.6L38.9,622.2L41.1,625.6L37.8,623.7L38.6,623.4L38.4,622.2L37.5,622.1L38.5,622.9L37.7,623.6L34.7,622.2L37.4,623.0L35.0,621.6L34.6,620.4L35.4,619.9Z M20.1,608.4L19.8,610.9L20.7,609.2L22.2,609.6L22.2,610.4L21.4,610.3L21.7,611.2L20.7,610.4L21.3,611.2L20.2,611.6L20.5,612.5L19.7,611.2L19.5,614.5L18.6,613.9L19.2,614.8L17.4,615.3L17.0,613.4L19.0,612.6L18.7,611.1L19.7,610.9L18.7,609.9L20.1,608.4Z M39.9,629.1L41.0,630.4L39.9,630.6L40.4,632.0L38.8,631.4L39.2,632.2L40.3,632.1L40.0,633.1L37.4,635.0L36.9,634.1L38.7,632.2L36.5,633.4L38.3,631.8L36.4,632.7L36.3,632.2L36.0,633.2L35.0,633.0L36.6,631.6L36.0,631.1L37.5,630.4L37.0,631.1L38.3,631.1L38.3,629.7L39.9,629.1Z M29.0,616.6L31.3,617.4L30.7,617.9L32.2,617.8L32.0,618.9L32.7,618.4L34.0,619.0L33.3,619.9L35.3,619.6L34.6,621.4L31.9,620.3L32.2,619.8L31.0,619.9L30.1,619.0L30.8,618.4L30.1,618.5L29.0,616.6Z M42.1,646.2L43.2,646.9L43.5,646.2L45.0,646.7L42.9,648.1L44.1,647.8L45.3,649.9L44.3,649.5L43.2,650.1L42.8,649.0L42.7,649.6L41.1,648.9L41.4,649.4L38.9,647.8L39.4,647.7L38.9,646.9L43.8,649.3L40.8,647.5L43.4,647.4L41.5,646.9L42.1,646.2Z M74.2,671.4L76.7,671.6L77.2,672.5L78.8,672.2L78.7,672.9L79.6,673.1L78.5,673.3L79.8,673.4L77.2,673.8L76.1,673.4L77.4,672.9L75.4,673.0L75.9,672.2L74.8,672.6L74.3,672.0L73.8,673.8L73.3,672.4L72.4,673.6L72.6,672.9L71.8,672.3L73.0,672.0L72.4,671.6L74.2,671.4Z M13.5,571.3L14.7,570.0L14.0,571.4L14.8,570.4L15.6,570.6L14.8,570.3L16.7,569.3L15.9,569.2L17.8,567.5L18.0,568.6L17.0,569.0L18.0,568.8L18.5,570.0L17.9,570.7L17.3,570.9L17.5,570.2L16.5,571.8L17.0,569.9L16.2,571.4L15.4,571.1L15.9,571.7L15.2,573.0L13.4,572.7L12.9,572.0L13.2,571.5L13.8,572.2L13.5,571.3Z M21.2,568.7L22.5,569.3L22.7,570.4L22.6,568.7L24.3,570.0L23.4,571.3L24.2,570.8L23.7,573.7L21.3,571.1L19.3,571.2L20.8,570.6L20.0,570.5L20.5,570.2L18.9,570.9L20.4,568.7L21.4,569.4L20.5,568.6L21.2,568.7Z M25.7,618.7L26.6,619.7L27.9,619.1L26.5,620.4L27.1,621.0L25.9,621.6L27.0,621.2L26.0,623.2L25.5,623.8L24.5,623.5L25.0,624.0L23.9,624.6L23.4,624.2L24.1,623.0L25.4,622.4L25.0,622.0L24.2,622.8L25.7,618.7Z M22.8,618.3L23.0,619.6L23.5,619.3L22.8,620.4L23.7,619.4L23.8,620.7L24.0,619.3L25.0,619.5L23.9,621.0L24.6,620.8L24.4,621.4L23.5,621.4L24.1,622.1L23.1,621.8L24.0,622.3L23.4,622.6L23.7,623.3L22.5,624.0L23.0,622.3L21.8,624.2L22.7,622.6L21.7,623.3L22.6,622.4L21.5,623.0L21.8,622.2L21.2,622.7L20.9,622.0L22.6,620.9L21.7,620.9L22.8,618.3Z M41.8,636.5L45.4,638.2L43.5,638.6L43.3,638.1L44.4,638.2L42.4,637.3L42.6,637.9L41.6,637.4L38.9,638.0L39.8,637.9L39.8,637.0L42.2,637.4L41.3,636.7L41.8,636.5Z M24.3,597.9L25.8,598.6L25.1,598.8L25.6,599.7L24.7,599.4L26.2,600.4L26.1,600.9L24.8,600.6L26.1,601.1L25.8,602.0L26.4,600.5L27.0,600.8L26.3,602.3L22.7,601.3L23.9,600.9L22.8,600.5L24.0,600.6L22.6,600.3L23.6,600.3L22.7,599.1L24.6,599.3L22.8,598.3L25.0,598.8L24.3,597.9Z M130.2,684.7L130.6,685.5L130.1,685.9L130.9,686.0L129.9,687.0L131.7,687.2L131.0,687.5L132.0,688.0L131.7,688.6L127.3,687.7L128.2,687.2L127.5,686.9L127.8,686.1L129.5,687.4L129.4,685.9L128.4,685.7L130.2,684.7Z M31.6,602.4L33.7,607.7L32.6,608.5L31.4,603.6L32.0,603.7L31.2,602.8L31.6,602.4Z M127.0,688.7L128.3,689.3L126.7,690.8L126.4,689.6L125.5,690.3L124.8,689.6L124.1,690.5L122.6,690.1L122.8,689.2L127.4,689.5L127.0,688.7Z M33.7,625.7L36.5,627.8L36.6,628.5L36.0,627.9L36.3,628.6L35.7,628.1L35.4,628.9L33.8,629.0L34.4,628.4L33.5,629.0L34.1,627.5L32.6,628.3L34.2,627.1L33.1,626.8L33.9,626.6L33.0,626.4L33.7,625.7Z M27.6,625.4L27.3,627.1L26.2,627.1L26.8,627.4L26.1,627.6L23.1,625.7L24.2,625.2L26.3,626.6L27.6,625.4Z M51.7,619.4L50.3,622.6L48.7,623.2L49.0,620.8L51.7,619.4Z M21.8,561.5L21.2,565.6L18.7,564.5L20.3,563.7L19.7,563.4L21.8,561.5Z M29.6,604.3L30.0,605.0L28.9,604.6L28.8,605.5L30.7,605.9L30.8,607.3L29.9,607.2L30.4,608.0L29.2,606.9L28.2,607.0L27.7,605.8L27.7,605.1L29.6,604.3Z M44.7,657.2L46.8,657.8L46.9,658.8L47.5,658.3L47.2,659.4L45.3,659.4L45.8,659.1L45.3,658.4L43.2,658.4L44.7,657.2Z M29.0,620.7L29.6,621.5L28.4,621.8L29.0,622.2L27.6,623.1L27.4,622.4L26.0,623.7L26.5,622.2L27.4,621.4L28.1,622.0L27.7,621.3L29.0,620.7Z M30.6,576.0L32.7,578.4L30.6,579.9L29.8,577.5L30.6,576.0Z M23.9,615.1L25.3,616.0L24.9,619.2L23.9,619.0L23.6,617.5L24.6,617.7L22.8,615.7L23.9,615.1Z M26.2,592.5L28.4,593.5L25.4,595.5L24.8,594.9L25.6,593.6L24.7,593.9L26.2,592.5Z M22.8,591.1L23.5,591.8L22.9,592.7L21.5,592.2L21.7,592.7L20.8,592.6L22.3,592.8L22.2,593.5L19.9,593.1L22.8,591.1Z M22.1,616.7L22.5,617.8L21.9,619.9L20.4,620.4L21.0,619.1L20.0,618.6L21.1,616.9L22.1,616.7Z M38.3,647.6L40.9,649.4L40.2,649.9L39.1,649.0L39.1,649.9L38.1,650.1L38.7,649.4L37.5,649.1L39.0,648.8L38.3,647.6Z M27.9,623.2L28.3,623.5L27.4,623.9L27.0,625.1L26.3,624.8L26.4,625.5L24.8,624.8L27.9,623.2Z M134.8,674.5L137.4,675.2L138.1,676.8L134.7,675.1L134.8,674.5Z M22.5,561.6L22.8,562.4L25.2,562.6L22.3,564.2L22.3,562.7L23.9,563.2L22.4,562.6L22.5,561.6Z M63.4,667.4L65.8,669.7L64.6,670.0L64.9,669.1L63.8,667.9L63.6,668.8L62.9,668.5L63.4,667.4Z M37.6,641.3L39.3,643.7L36.4,641.6L37.6,641.3Z M37.1,615.5L38.4,616.1L38.1,617.4L39.2,616.7L39.2,618.2L38.3,618.2L38.6,617.5L37.9,617.7L37.1,615.5Z M136.9,678.5L137.7,679.5L137.5,680.7L134.9,680.6L134.7,679.4L136.9,678.5Z M142.2,677.7L143.7,678.6L140.5,679.8L140.4,678.3L142.2,677.7Z M33.0,609.1L34.4,610.4L33.1,610.4L34.3,610.5L34.9,611.9L32.7,611.3L33.6,610.8L32.3,610.2L33.0,609.1Z M93.0,673.6L93.6,673.9L93.0,674.6L92.2,674.8L92.7,674.0L91.4,675.1L89.9,675.1L90.3,674.2L93.0,673.6Z M35.4,608.0L36.7,608.1L37.1,609.9L36.4,609.5L35.6,610.8L34.5,609.1L34.6,608.1L35.4,608.0Z M46.8,653.6L49.2,654.0L49.1,655.3L47.2,655.4L47.9,654.2L45.8,654.5L47.7,654.0L45.9,653.9L46.8,653.6Z M88.4,657.8L88.9,658.5L88.0,659.8L85.6,658.5L88.4,657.8Z M13.0,568.2L15.3,569.5L14.4,570.0L12.0,568.9L13.0,568.2Z M34.7,643.8L35.2,644.1L34.4,645.2L32.0,645.1L34.7,643.8Z M49.3,651.9L52.0,652.6L48.7,653.2L49.1,652.4L50.1,652.8L49.3,651.9Z M131.2,688.9L132.7,690.3L129.5,689.3L131.2,688.9Z M27.4,605.6L28.1,607.2L27.1,606.7L26.8,607.5L25.6,607.4L25.3,606.4L26.5,606.7L27.4,605.6Z M86.1,674.0L88.3,673.4L89.4,673.8L87.8,673.8L88.0,674.4L86.8,674.8L86.1,674.0Z M22.2,597.7L22.1,600.8L20.4,598.9L21.4,599.2L20.9,598.3L22.2,597.7Z M24.1,606.9L24.7,607.3L24.0,608.3L23.8,607.5L21.4,608.0L24.1,606.9Z M38.9,608.4L39.9,609.4L39.8,610.7L37.8,610.1L38.9,609.4L37.8,609.8L37.5,609.2L38.9,608.4Z M126.0,683.5L127.4,685.2L124.9,685.7L126.0,684.8L125.4,684.2L126.0,683.5Z M44.5,649.8L46.7,651.0L44.9,650.0L45.3,650.6L43.3,650.6L44.5,649.8Z M39.0,619.8L40.5,621.2L39.6,622.1L38.0,620.6L39.0,619.8Z M23.2,605.6L24.3,605.9L24.2,606.8L21.6,607.3L22.0,606.0L23.2,606.3L23.2,605.6Z M58.6,649.3L60.9,650.9L59.2,650.9L58.6,649.3Z M22.8,608.0L23.7,608.4L22.0,609.6L20.9,609.1L22.5,608.8L21.8,608.5L22.9,608.5L22.3,608.2L22.8,608.0Z M93.2,680.2L93.7,680.8L92.5,681.1L92.8,681.9L91.0,680.5L92.5,680.8L93.2,680.2Z M105.4,681.1L107.7,682.7L105.7,682.1L105.4,681.1Z M96.2,681.3L98.2,682.2L96.6,682.1L97.4,682.2L97.3,683.0L95.9,682.8L96.2,681.3Z M63.1,653.8L63.8,654.1L63.0,655.6L61.4,654.9L63.1,653.8Z M19.2,571.5L21.3,572.8L19.5,572.9L18.8,572.0L19.2,571.5Z M63.2,664.3L63.6,665.0L61.1,663.8L63.2,664.3Z M127.0,685.3L127.7,685.8L125.8,687.0L125.6,686.4L126.9,686.2L126.4,685.6L127.0,685.3Z M98.7,682.2L100.9,683.1L100.7,683.7L98.6,683.0L98.7,682.2Z M103.3,679.3L104.3,679.4L103.2,680.1L101.4,679.9L103.3,679.3Z M83.8,636.6L81.7,637.8L83.8,636.6Z M28.3,618.6L27.7,620.2L28.5,619.7L28.2,620.3L26.8,620.6L28.3,618.6Z M33.8,617.5L35.8,618.7L35.2,619.0L33.8,617.5Z M109.0,679.0L108.6,680.8L107.8,681.2L107.7,679.9L109.0,679.0Z M26.9,591.2L27.9,591.5L25.3,591.8L26.9,591.2Z M30.3,624.3L31.7,625.1L29.4,625.4L30.3,624.3Z M37.3,624.2L38.7,624.9L38.9,625.8L37.0,624.6L37.3,624.2Z M60.0,664.0L61.3,665.1L59.6,665.1L59.3,664.4L60.0,664.0Z M39.5,618.6L40.2,620.8L38.8,619.1L39.5,618.6Z M70.1,669.3L71.3,669.9L69.7,670.9L70.1,669.3Z M26.7,617.5L26.7,618.3L27.5,618.3L26.9,619.1L25.7,618.4L26.7,617.5Z M37.7,628.8L38.2,629.7L36.3,630.0L37.7,628.8Z M68.8,661.9L69.1,662.7L70.1,662.8L67.9,662.4L68.8,661.9Z M26.4,609.9L26.3,611.7L25.3,611.9L26.4,609.9Z M27.3,595.3L27.7,596.3L26.5,597.0L26.2,595.4L27.3,595.3Z M91.1,678.3L93.0,679.3L91.5,679.2L91.1,678.3Z M16.4,592.3L15.2,593.9L16.4,592.3Z M134.1,689.1L134.4,690.7L133.0,690.0L134.1,689.1Z M14.4,576.3L15.6,576.6L15.6,577.8L14.7,577.4L14.4,576.3Z M58.7,634.4L59.0,635.2L57.2,635.2L58.7,634.4Z M75.5,673.7L75.7,675.0L74.3,675.1L75.5,673.7Z M29.7,622.1L28.2,623.4L29.7,622.1Z M29.1,607.4L30.3,608.5L28.6,607.9L29.1,607.4Z M23.1,612.3L23.3,613.7L21.9,613.6L21.9,612.8L23.1,612.3Z M130.9,690.9L132.4,691.7L131.3,692.0L130.9,690.9Z M111.7,683.9L112.4,685.0L110.7,684.0L111.7,683.9Z M52.5,655.1L52.8,655.9L51.3,656.1L52.5,655.1Z M23.8,603.7L24.5,603.9L23.5,604.7L22.5,604.4L23.8,603.7Z M63.9,666.2L65.3,667.3L63.7,667.1L63.9,666.2Z M42.2,638.0L43.4,638.8L42.0,639.4L42.2,638.0Z M21.9,568.0L22.5,569.3L20.8,568.2L21.9,568.0Z M33.6,633.1L35.0,634.0L33.8,634.2L34.4,633.8L33.6,633.1Z M117.2,677.4L118.3,678.6L116.7,678.1L117.2,677.4Z M55.2,659.0L56.5,659.6L55.0,659.6L55.2,659.0Z M61.5,660.8L62.1,662.5L60.9,661.8L61.5,660.8Z M90.4,679.5L92.2,680.0L90.0,679.7L90.4,679.5Z M34.4,631.7L35.4,632.0L34.5,632.6L33.4,632.2L34.4,631.7Z M36.3,641.8L36.7,642.7L35.1,642.5L36.3,641.8Z M27.0,627.7L27.7,628.4L26.3,628.6L27.0,627.7Z M90.9,673.1L91.9,673.5L90.0,673.7L90.9,673.1Z M93.0,675.0L91.7,676.2L91.7,675.3L93.0,675.0Z M35.7,622.8L37.1,623.5L36.4,623.9L35.7,622.8Z M66.3,669.4L67.6,670.6L66.3,669.4Z M112.4,683.1L113.1,683.4L112.4,684.0L111.8,683.6L112.6,683.3L111.5,683.3L112.4,683.1Z M39.6,625.4L40.5,626.6L39.4,626.1L40.1,626.1L39.6,625.4Z M21.3,593.5L21.6,594.5L20.6,594.7L21.3,593.5Z M106.8,684.7L107.6,686.0L106.9,686.2L106.8,684.7Z M23.4,626.1L24.0,627.4L23.9,626.7L22.9,626.6L23.4,626.1Z M47.4,651.4L46.2,652.2L47.4,651.4Z M133.1,688.1L131.7,688.8L133.1,688.1Z M26.0,587.5L26.6,587.9L25.5,588.6L26.0,587.5Z M29.2,595.7L28.3,597.1L29.2,595.7Z M113.4,683.6L114.1,685.0L112.9,684.0L113.4,683.6Z M23.0,590.4L24.2,590.8L23.6,591.5L23.0,590.4Z M75.3,657.3L76.2,658.4L75.7,658.8L75.3,657.3Z M17.7,564.4L18.3,565.7L17.1,564.8L17.7,564.4Z M76.2,674.0L77.1,674.4L76.8,675.2L76.1,675.2L76.2,674.0Z M26.6,616.3L25.8,617.9L25.7,616.6L26.6,616.3Z M64.0,661.3L64.7,661.4L64.5,662.1L63.1,661.7L64.0,661.3Z M27.9,625.8L28.1,627.2L27.3,626.9L27.9,625.8Z M45.7,634.2L44.3,635.0L45.7,634.2Z M60.2,662.0L60.6,663.1L59.5,662.5L60.2,662.0Z M32.8,625.4L32.3,626.2L32.7,625.6L31.4,625.8L32.8,625.4Z M93.6,674.9L93.6,675.9L92.7,675.9L93.6,674.9Z M47.0,655.6L47.7,656.1L46.2,656.0L47.0,655.6Z M67.8,668.4L68.9,669.1L67.8,669.1L67.8,668.4Z M40.7,645.8L41.9,646.0L40.7,645.8Z M38.2,645.2L39.1,645.9L37.7,645.2L38.2,645.2Z M36.3,629.1L34.8,629.5L36.3,629.1Z M44.1,651.4L42.8,651.8L44.1,651.4Z M28.5,616.0L29.9,616.6L28.5,616.0Z M14.6,575.4L15.3,576.2L14.1,576.0L14.6,575.4Z M43.0,650.2L41.8,651.0L43.0,650.2Z M34.4,600.7L35.0,601.4L34.1,601.3L34.0,600.1L34.4,600.7Z M103.3,683.9L103.8,684.2L102.6,684.5L103.3,683.9Z M48.5,658.8L48.5,660.1L48.5,658.8Z M28.9,628.8L29.4,629.8L28.2,629.0L28.9,628.8Z M21.3,603.5L22.3,603.9L21.3,604.2L21.3,603.5Z M83.7,676.9L83.4,677.9L82.8,677.6L83.7,676.9Z M29.6,577.7L29.8,579.2L29.6,577.7Z M30.9,641.6L31.9,642.3L31.1,642.6L30.9,641.6Z M69.4,664.0L70.1,665.0L69.2,664.6L69.4,664.0Z M17.0,592.8L16.3,593.6L17.0,592.8Z M38.5,646.5L38.3,647.3L37.4,646.8L38.5,646.5Z M50.7,660.5L51.2,660.9L50.0,661.2L50.7,660.5Z M31.1,622.7L31.8,623.2L31.0,623.6L31.1,622.7Z M18.6,589.8L19.4,590.6L18.2,590.2L18.6,589.8Z M87.5,674.7L86.2,675.4L87.5,674.7Z M75.3,669.6L75.7,669.9L74.4,670.0L75.3,669.6Z M29.1,626.9L28.3,628.1L29.1,626.9Z M20.5,571.7L21.2,572.5L20.1,572.1L20.5,571.7Z M24.9,612.0L24.1,612.8L24.9,612.0Z M92.5,672.7L93.0,672.8L91.4,672.8L92.5,672.7Z M21.3,586.7L21.1,588.0L21.3,586.7Z M17.4,578.1L18.2,578.5L17.4,579.1L17.4,578.1Z M109.0,684.0L110.0,684.4L109.0,684.0Z M25.9,625.6L26.0,626.3L25.1,626.0L25.9,625.6Z M25.7,590.2L26.4,590.9L25.5,590.8L25.7,590.2Z M107.5,679.8L107.3,680.7L106.7,680.1L107.5,679.8Z M30.9,613.7L30.8,614.4L30.0,614.4L30.9,613.7Z M55.2,661.2L54.3,661.8L55.2,661.2Z M55.0,632.4L56.2,632.9L55.0,632.4Z M28.1,616.7L27.6,617.9L28.1,616.7Z M122.5,678.4L121.6,679.1L122.5,678.4Z M29.9,631.0L30.8,631.8L29.9,631.0Z M31.5,626.2L30.5,626.8L31.5,626.2Z M32.8,626.3L31.9,627.1L32.8,626.3Z M45.7,654.7L46.5,655.1L45.7,654.7Z M31.0,610.4L31.7,610.8L30.7,610.9L31.0,610.4Z M28.1,629.7L28.8,630.3L27.8,630.3L28.1,629.7Z M24.2,612.1L23.6,613.1L24.2,612.1Z M22.7,604.7L23.3,604.9L22.2,605.2L22.7,604.7Z M27.3,590.8L28.1,591.4L27.3,590.8Z M117.5,674.8L118.1,675.6L117.5,674.8Z M25.0,607.0L25.3,607.7L25.0,607.0Z M70.4,668.7L71.1,668.9L70.1,669.1L70.4,668.7Z M27.6,614.5L28.5,615.1L27.6,614.5Z M16.2,571.5L15.9,572.5L16.2,571.5Z M25.8,613.6L26.0,614.2L25.0,613.8L25.8,613.6Z M40.6,643.2L41.6,643.9L40.6,643.2Z M59.0,664.6L59.2,665.2L58.4,665.1L59.0,664.6Z M32.3,642.0L31.9,642.8L32.3,642.0Z M104.9,685.2L105.0,686.2L104.9,685.2Z M67.6,669.1L68.2,669.3L67.6,669.8L67.6,669.1Z M104.8,680.5L105.2,681.2L104.3,680.7L104.8,680.5Z M40.8,646.3L41.3,646.9L40.8,646.3Z M70.7,663.6L69.8,663.7L70.7,663.6Z M43.9,635.3L44.4,636.0L43.9,635.3Z M115.1,676.9L114.3,677.1L115.1,676.9Z M40.9,635.0L41.3,635.6L40.4,635.7L40.9,635.0Z M94.8,680.8L95.7,681.4L94.8,680.8Z M60.5,632.0L61.1,632.0L60.9,632.5L60.5,632.0Z M31.9,644.4L32.5,644.8L31.8,645.0L31.9,644.4Z M46.4,646.1L46.8,646.6L46.4,646.1Z M30.5,622.0L30.7,622.7L30.5,622.0Z M46.1,641.6L46.9,642.0L46.1,641.6Z M65.5,663.7L64.8,663.9L65.5,663.7Z M49.5,657.4L48.4,657.7L49.5,657.4Z M99.6,683.3L98.9,683.7L99.6,683.3Z M40.0,649.8L40.6,650.2L39.9,650.4L40.0,649.8Z M46.3,647.2L47.0,647.7L46.3,647.2Z M48.2,653.6L48.9,653.8L47.6,653.7L48.2,653.6Z M43.3,635.3L43.9,635.8L43.3,635.3Z M18.3,571.2L17.6,571.8L18.3,571.2Z M45.0,646.9L45.6,647.4L44.8,647.4L45.0,646.9Z M76.6,669.6L76.0,669.8L76.6,669.6Z M22.6,578.8L23.0,579.5L22.6,578.8Z M51.4,629.2L52.4,629.1L51.4,629.2Z M38.9,637.2L39.0,637.7L38.3,637.5L38.9,637.2Z M19.1,570.1L18.6,571.0L19.1,570.1Z M45.1,645.8L45.8,646.1L45.1,645.8Z M41.6,617.4L41.2,618.2L41.6,617.4Z M12.9,571.2L12.1,571.5L12.9,571.2Z M42.4,612.9L42.8,613.6L42.4,612.9Z M57.8,656.5L57.2,657.4L57.8,656.5Z M63.7,655.4L63.0,655.7L63.7,655.4Z M48.2,652.2L47.1,652.5L48.2,652.2Z M36.8,642.6L37.5,643.2L36.8,642.6Z M88.5,674.3L88.8,674.8L88.0,674.7L88.5,674.3Z M27.6,627.1L27.1,627.6L27.6,627.1Z M33.7,605.8L33.9,606.9L33.7,605.8Z M39.7,646.6L40.3,647.2L39.7,646.6Z M31.8,625.1L32.3,625.3L31.6,625.6L31.8,625.1Z M16.2,578.0L16.4,578.5L15.7,578.6L16.2,578.0Z M21.8,603.0L22.2,603.8L21.8,603.0Z M41.4,626.8L41.6,627.6L41.4,626.8Z M16.8,577.3L17.3,577.8L16.6,577.8L16.8,577.3Z M121.1,684.2L121.7,684.4L120.8,684.6L121.1,684.2Z M48.2,655.3L47.4,655.5L48.2,655.3Z M31.8,626.4L31.1,626.9L31.8,626.4Z"}, {"codigo": "AI", "codregion": "11", "nombre_shp": "Región de Aysén del Gral.Ibañez del Campo", "area_km": 106703.4, "cx": 39.8, "cy": 523.9, "bbox": [12.7, 473.9, 77.3, 572.4], "d": "M29.9,546.1L29.8,545.5L28.6,546.9L27.0,546.4L27.8,546.5L27.2,546.1L28.1,545.4L26.3,545.9L27.2,544.2L28.1,544.3L27.3,544.8L28.6,544.4L27.4,543.7L28.6,542.5L29.4,542.5L29.6,544.0L29.7,542.6L30.5,542.7L31.1,544.0L29.4,545.3L28.6,545.0L28.9,544.4L28.0,544.6L28.7,544.7L28.3,545.3L32.0,544.5L32.3,545.8L33.9,546.6L35.1,546.1L33.0,546.1L32.5,544.6L35.7,544.5L32.5,544.2L36.5,544.0L36.9,543.6L35.6,544.0L34.7,543.4L37.5,542.1L37.0,541.5L37.4,542.0L34.4,543.6L32.4,543.7L32.0,542.4L34.2,542.0L35.2,540.9L34.1,541.9L30.7,542.2L31.4,542.7L30.1,541.3L31.7,541.3L33.1,540.2L31.5,541.2L30.2,540.9L30.1,540.2L29.5,541.5L29.1,540.6L32.3,536.7L33.5,537.1L33.3,539.6L34.0,539.7L33.4,538.2L34.5,538.2L33.3,536.7L34.6,536.8L34.9,538.4L34.3,538.7L35.5,540.0L34.7,536.7L35.7,536.1L35.9,537.2L35.8,536.1L36.4,535.9L37.2,537.6L37.9,536.6L37.1,537.1L35.9,535.9L37.3,533.9L34.7,536.3L33.2,535.1L34.1,533.3L35.3,534.2L35.8,533.0L37.2,533.4L38.1,532.3L37.2,533.4L35.8,533.0L36.5,532.7L36.1,532.4L35.1,533.0L33.5,530.9L35.1,530.2L33.4,530.9L30.8,529.4L33.0,529.7L32.9,529.0L34.4,528.3L35.5,528.5L34.6,528.1L35.5,527.6L32.8,529.1L32.1,528.3L32.7,529.0L31.8,528.7L31.7,529.3L28.0,528.3L30.0,529.3L27.7,529.4L27.0,530.5L25.0,529.5L25.8,528.8L24.8,530.0L22.3,528.8L21.2,526.7L23.4,523.3L19.6,526.9L19.2,525.6L19.1,526.9L17.4,526.9L17.3,527.6L16.7,526.6L14.6,528.4L13.6,528.0L14.5,528.7L13.6,529.9L14.8,529.6L15.0,528.3L16.9,528.3L15.9,529.8L16.8,529.1L16.4,529.8L17.2,529.4L17.6,530.0L16.3,531.2L18.1,531.1L17.8,530.1L18.2,530.7L18.2,531.6L15.5,532.8L12.7,529.9L12.7,527.6L13.5,527.7L12.8,527.2L13.6,525.9L15.4,526.6L14.9,525.7L15.8,525.9L14.7,524.9L16.2,525.3L16.3,524.4L17.3,524.4L16.9,523.4L17.8,524.2L17.0,523.3L17.5,522.8L19.4,522.4L19.8,523.6L19.3,521.0L21.6,522.2L23.6,522.2L20.4,521.4L20.5,520.7L21.9,520.8L20.8,520.5L21.3,519.6L23.9,521.0L23.0,519.7L23.6,518.5L25.5,519.6L25.5,519.0L27.1,518.7L25.4,518.7L25.0,517.9L25.5,516.5L28.3,516.5L26.0,516.2L26.5,514.0L25.5,514.9L25.7,515.8L24.6,516.6L24.0,516.2L23.6,517.7L21.6,517.6L21.0,516.7L24.5,515.6L21.8,515.8L21.3,515.5L22.3,514.9L23.1,515.1L21.0,515.2L20.7,513.5L21.7,513.2L22.4,514.2L22.6,513.7L25.0,514.8L22.7,513.3L24.1,513.9L24.1,513.4L25.4,513.4L24.7,512.7L25.8,512.4L26.5,512.6L26.0,513.9L27.1,512.7L28.1,512.8L27.9,513.5L28.8,513.0L28.5,514.1L29.5,514.0L29.2,514.9L30.1,514.6L29.3,516.0L29.9,516.5L30.5,514.8L31.4,515.2L29.6,513.2L30.7,513.3L29.8,512.2L32.0,512.3L32.2,513.4L33.0,512.4L34.5,512.2L35.2,512.9L35.0,512.3L35.2,513.2L32.4,513.9L34.9,514.1L33.7,514.7L35.5,514.1L35.9,515.2L32.6,516.2L31.7,515.8L32.5,516.4L35.2,515.9L35.2,517.5L34.2,518.1L31.3,517.8L35.3,517.8L35.9,515.4L36.8,516.2L36.3,518.2L31.9,520.1L29.9,518.4L29.7,519.1L31.9,520.3L36.0,518.9L35.4,519.8L36.1,520.5L36.9,519.6L37.1,520.6L36.3,520.6L38.5,521.8L36.9,519.6L36.2,519.7L36.7,518.2L38.0,518.0L39.9,519.7L39.4,522.1L38.0,523.7L38.2,525.0L37.3,524.6L36.5,526.4L37.3,525.2L38.0,526.1L38.8,525.8L39.3,524.4L40.9,525.2L41.8,524.5L40.3,525.0L39.4,524.0L40.0,523.0L39.4,522.7L40.2,522.8L42.2,521.0L44.2,521.2L44.7,522.2L45.7,521.8L46.8,523.2L46.0,522.0L44.7,522.1L44.3,520.9L42.3,520.5L44.7,516.5L47.5,515.6L44.7,515.9L45.7,513.9L48.0,512.6L50.1,513.5L48.0,512.4L46.9,513.6L42.8,513.0L44.9,510.3L48.4,509.5L46.3,509.4L46.9,508.3L46.3,508.4L42.2,511.8L43.3,506.2L44.6,505.2L44.7,506.6L44.8,504.8L45.6,504.1L46.0,505.3L45.6,504.1L47.4,503.1L50.4,506.0L52.6,506.5L53.4,505.2L52.8,504.7L51.3,505.5L47.3,502.2L45.6,503.2L43.1,502.3L43.0,501.5L44.0,502.6L44.2,501.3L46.0,501.3L45.7,499.7L46.4,499.2L45.1,499.2L45.2,497.2L48.9,497.1L53.8,493.5L54.8,494.2L58.8,491.9L54.8,494.2L54.2,492.0L55.2,489.8L56.2,489.2L57.9,490.2L55.8,488.7L56.5,486.1L54.9,489.3L54.3,489.1L53.8,488.5L54.5,488.2L53.0,487.4L53.7,487.1L51.5,486.9L52.5,485.5L51.5,486.0L49.3,484.4L49.0,485.1L47.6,484.7L49.8,483.5L48.7,483.6L49.0,482.5L47.5,483.9L46.4,483.6L46.3,482.4L47.7,483.0L47.6,481.3L49.0,481.9L48.3,480.6L48.8,479.8L49.2,480.8L48.7,479.5L49.8,478.8L49.4,478.1L50.2,478.2L49.6,477.6L50.5,476.2L51.2,477.9L50.9,477.0L52.1,476.6L54.5,477.5L52.8,476.9L52.8,474.2L52.5,476.2L51.2,476.6L49.9,475.4L51.2,475.0L52.3,475.7L53.0,473.9L53.6,476.2L55.7,476.0L57.3,476.7L57.7,475.6L59.7,474.5L60.6,476.1L60.1,476.4L61.0,476.9L60.4,477.3L61.7,477.5L61.9,478.4L63.3,478.5L63.3,479.5L65.0,479.7L64.9,479.0L67.2,479.5L67.0,480.5L68.2,481.6L66.6,482.3L67.6,484.1L66.8,485.0L67.5,486.2L66.7,486.5L67.1,487.7L68.5,487.0L73.2,487.1L73.7,487.8L76.2,488.1L77.3,489.7L77.2,490.7L75.8,490.8L75.7,493.6L74.5,494.7L72.0,493.3L69.2,494.2L67.5,493.6L66.5,494.5L63.5,493.7L63.9,496.2L66.2,497.3L67.1,496.6L70.7,497.6L71.2,499.8L72.7,500.8L74.1,503.2L72.4,505.0L71.1,504.9L72.0,506.7L68.1,507.5L67.3,509.7L67.7,512.9L69.3,513.6L69.9,515.2L68.5,517.2L65.6,518.1L67.6,519.2L68.3,520.5L67.9,521.8L69.5,527.7L66.8,529.7L65.1,530.1L65.0,532.9L66.1,533.5L65.1,534.7L66.4,535.7L66.4,537.4L64.2,536.8L64.5,538.5L59.6,541.4L60.3,542.4L60.0,543.8L58.5,545.0L58.1,546.5L57.0,546.4L57.8,547.7L56.9,549.9L58.4,550.4L58.1,552.1L59.3,552.3L60.2,553.7L60.0,555.1L61.2,556.6L60.5,557.4L59.0,557.2L59.5,557.9L58.2,560.1L56.1,559.7L56.9,565.1L53.1,568.1L51.0,567.7L48.2,572.4L36.2,563.4L32.2,563.5L33.5,562.3L32.7,562.9L32.4,562.0L31.8,562.9L30.9,561.4L32.7,560.1L33.6,560.5L32.8,560.1L33.2,559.5L35.4,560.0L37.5,561.8L36.0,560.1L36.3,558.6L39.2,558.0L36.4,558.2L34.6,557.1L33.1,557.2L37.3,556.5L32.8,556.9L33.4,556.0L32.4,554.4L30.8,554.3L29.4,552.5L31.0,551.0L28.4,552.6L27.5,552.0L27.6,550.7L29.1,549.7L31.9,551.0L33.1,553.7L33.0,555.5L33.3,554.1L34.1,555.1L35.3,554.4L33.9,554.9L32.3,551.0L33.2,551.3L33.9,550.7L34.4,552.3L34.0,550.7L34.9,551.1L35.0,550.4L36.4,550.6L35.8,551.0L36.2,551.4L38.6,551.3L38.4,552.9L40.1,551.4L39.6,553.6L40.5,552.5L42.5,553.4L41.8,555.4L42.6,554.3L42.9,555.3L43.9,555.4L43.3,554.7L44.0,553.9L46.4,555.3L49.1,554.0L48.4,552.5L48.7,553.6L47.8,555.0L45.5,555.0L47.0,553.6L47.1,551.2L46.0,554.0L43.9,553.2L42.3,551.3L43.5,550.6L41.7,550.7L41.7,548.6L44.4,550.4L47.7,550.2L50.2,551.7L47.7,550.2L43.4,549.6L43.9,548.2L43.5,548.5L42.7,547.4L40.5,546.7L40.5,545.0L41.9,544.2L40.6,544.3L41.1,542.8L40.1,542.8L41.2,543.0L39.8,545.5L40.1,546.9L37.7,548.0L36.1,547.6L35.9,546.6L31.6,547.1L30.8,546.6L32.4,546.6L31.6,546.1L28.9,546.9L29.9,546.1Z M50.6,486.7L51.7,488.2L50.5,490.5L52.1,487.9L53.4,488.2L54.7,489.8L53.0,491.7L50.7,490.6L50.8,491.4L53.2,492.1L52.8,493.3L49.6,495.9L46.5,496.7L44.7,494.7L48.0,494.6L46.5,493.5L45.1,494.4L44.7,493.7L45.3,493.3L44.1,493.3L43.8,491.6L44.7,490.3L45.2,491.5L45.9,490.9L47.3,491.5L46.3,489.9L48.6,490.3L46.7,489.2L46.7,488.0L47.9,487.4L48.8,488.4L48.6,487.7L49.2,487.6L50.2,489.1L48.8,487.2L50.6,486.7Z M17.4,550.9L18.0,551.7L17.1,552.2L17.7,552.2L17.2,553.6L18.2,552.2L17.5,553.9L18.9,553.3L18.4,555.2L18.9,554.6L19.6,555.9L19.0,556.3L19.7,556.1L20.6,557.6L19.6,558.6L20.8,557.8L21.5,559.3L21.0,558.9L20.4,560.1L21.1,559.3L21.7,560.4L21.7,561.5L19.3,563.2L18.8,562.2L20.3,561.5L18.7,562.0L19.5,561.0L18.6,561.3L18.4,560.3L19.2,559.7L18.6,560.1L18.2,559.2L19.4,558.0L17.9,557.8L18.8,556.5L17.7,557.7L15.8,558.3L14.7,557.6L17.4,556.8L17.6,555.6L16.7,556.6L17.3,554.7L16.6,556.6L15.6,556.8L16.9,554.1L15.4,555.3L14.3,552.6L16.5,551.8L15.9,553.1L17.4,550.9Z M26.2,553.0L27.0,554.0L26.4,554.4L26.5,555.6L27.1,554.8L28.4,557.8L26.9,558.3L28.2,559.1L28.1,561.3L29.3,562.1L29.1,561.0L29.8,561.2L29.5,562.9L28.2,563.2L26.5,561.8L23.5,561.9L23.4,560.8L23.2,561.7L22.4,561.1L22.2,559.4L24.0,557.9L25.2,557.7L25.2,560.0L25.5,559.1L25.9,560.6L26.7,559.2L25.1,556.3L26.2,553.0Z M35.5,548.8L36.5,548.0L35.8,547.6L38.1,548.7L39.6,548.5L38.6,550.0L37.5,549.9L38.0,549.1L36.6,550.0L32.3,550.3L31.2,549.3L29.4,549.0L31.1,549.0L30.1,548.4L31.3,547.6L33.7,549.0L31.6,547.5L32.6,547.1L36.2,548.0L34.0,548.9L35.1,548.6L35.3,549.7L35.5,548.8Z M38.8,497.7L40.5,500.0L40.7,501.1L40.0,501.4L40.6,501.4L40.0,502.1L40.5,503.0L39.5,503.3L38.7,502.2L36.4,502.5L36.3,501.4L38.5,501.6L35.9,501.5L35.0,501.1L35.5,500.4L34.2,500.9L33.9,498.9L33.9,500.8L33.0,501.0L32.7,499.3L33.5,498.5L35.5,498.8L38.8,497.7Z M19.4,552.2L22.5,553.1L21.1,552.5L22.1,552.5L23.5,553.4L22.7,553.8L24.1,553.8L23.6,554.9L22.9,554.5L23.5,555.1L24.3,554.5L23.2,555.6L25.6,554.0L24.0,556.2L25.1,555.2L24.6,555.6L25.0,557.5L24.2,557.7L24.4,557.1L22.2,558.9L21.1,556.8L21.7,556.6L20.8,556.8L20.2,555.6L21.2,554.6L19.8,555.0L20.3,554.2L19.6,554.3L20.8,553.6L19.7,554.2L20.3,553.5L19.5,553.7L18.8,552.3L19.4,552.2Z M42.7,513.2L45.7,513.8L40.7,521.5L41.5,519.5L41.2,515.2L42.3,514.7L41.8,514.3L42.7,513.2Z M34.5,490.8L37.1,491.1L38.3,492.7L36.4,492.8L36.7,491.9L35.0,493.8L32.7,494.6L31.2,494.0L31.0,492.9L34.5,493.2L30.6,492.8L30.3,491.2L34.5,490.8Z M22.1,548.7L22.8,550.7L25.2,551.4L24.2,552.5L21.4,551.5L24.2,552.8L23.9,553.2L24.7,552.8L24.3,553.8L21.9,552.1L20.5,552.1L21.0,551.0L22.2,551.2L21.6,550.6L22.9,551.2L22.3,550.7L18.7,551.5L20.7,550.6L20.5,550.1L18.9,550.7L19.5,550.0L21.6,549.2L22.0,549.6L22.1,548.7Z M34.1,495.6L36.7,496.1L37.6,497.4L35.8,497.8L34.9,497.2L35.7,497.9L30.8,498.3L30.6,497.8L34.1,495.6Z M17.5,559.6L18.2,558.4L18.2,559.8L17.3,560.2L18.3,560.1L18.5,561.4L18.1,560.9L15.3,563.0L13.8,562.3L16.0,562.1L17.2,560.9L14.9,561.8L17.3,560.2L14.8,561.7L13.7,561.5L13.3,558.9L14.4,558.4L15.1,559.3L16.8,558.2L16.9,559.0L17.7,558.2L17.0,559.4L17.5,559.6Z M30.5,505.9L32.3,506.7L31.0,507.2L32.4,506.8L33.1,507.8L31.0,508.0L33.1,508.1L33.5,509.1L33.1,510.2L30.0,510.2L31.9,510.6L29.7,511.8L29.1,510.9L30.0,510.2L29.1,508.8L29.9,508.8L29.5,507.6L30.5,505.9Z M40.7,505.7L42.5,506.5L41.8,508.6L42.3,509.4L40.7,508.7L42.0,510.1L41.4,511.6L39.0,509.8L39.1,509.0L38.7,509.4L40.7,505.7Z M39.4,504.3L36.3,504.6L34.7,503.4L34.8,504.5L33.8,502.2L35.7,501.6L36.3,502.6L38.8,502.4L39.4,504.3Z M38.2,476.3L39.1,477.4L36.9,477.7L38.0,478.8L37.2,478.7L36.9,479.5L36.0,478.3L35.0,478.6L33.8,477.9L35.0,476.9L37.5,477.5L37.3,476.8L38.5,476.8L38.2,476.3Z M18.3,561.3L16.7,563.6L14.4,564.6L13.4,564.1L13.4,562.5L15.4,563.4L18.3,561.3Z M40.5,489.7L41.9,491.3L40.1,493.2L41.4,492.2L42.2,492.8L39.7,493.6L37.7,490.8L38.5,490.8L39.0,492.0L38.8,490.2L40.5,489.7Z M20.7,545.1L21.3,546.6L19.9,547.1L21.9,547.0L21.2,547.7L19.5,548.2L19.6,547.2L18.9,547.1L19.3,548.1L17.8,546.7L16.8,547.2L16.9,546.2L19.3,546.5L20.7,545.1Z M31.8,487.2L32.5,487.5L32.9,489.0L29.7,488.8L30.6,489.2L30.6,490.0L28.1,488.8L28.7,487.8L30.4,487.9L30.2,488.6L31.8,487.2Z M35.6,505.5L38.0,506.6L39.1,506.0L38.3,508.1L37.4,507.7L37.7,507.0L37.3,507.6L36.3,507.3L36.9,507.0L35.4,507.1L34.6,508.5L35.1,506.1L36.6,506.1L35.2,505.9L35.6,505.5Z M40.3,512.2L40.9,516.2L38.9,515.7L40.2,513.5L38.7,513.5L39.6,513.8L38.4,514.3L38.8,515.1L37.4,515.5L37.9,513.1L39.2,513.2L38.8,512.7L40.3,512.2Z M32.1,555.8L34.0,558.6L33.1,559.2L29.7,557.3L30.6,556.9L32.9,558.3L30.8,556.9L32.1,555.8Z M28.2,552.8L31.5,555.3L31.2,556.2L29.1,556.8L28.8,555.7L30.1,554.3L28.5,555.8L28.2,554.0L29.1,554.0L28.2,553.4L29.4,553.5L28.2,552.8Z M37.9,515.6L39.4,516.3L39.4,517.1L39.7,516.2L41.1,517.0L39.9,519.4L38.6,518.4L39.6,518.1L37.1,517.3L37.9,515.6Z M35.8,482.7L36.4,483.8L38.1,484.2L36.2,484.9L36.7,486.2L35.7,486.2L34.5,483.9L35.1,483.3L36.3,484.3L35.1,483.2L35.8,482.7Z M36.3,507.4L38.0,508.8L37.7,510.5L36.7,511.0L35.5,510.8L34.6,508.6L36.3,507.4Z M35.7,511.0L37.8,511.2L36.6,511.9L37.0,513.3L36.1,514.5L35.8,513.1L36.3,512.8L35.6,513.1L35.6,512.3L34.7,512.0L35.7,511.0Z M30.9,500.8L33.4,502.0L32.7,502.9L33.3,503.0L33.0,504.3L32.3,503.5L32.4,501.8L32.2,503.1L31.5,502.4L31.9,503.8L30.4,502.4L30.4,500.9L30.9,500.8Z M33.7,487.7L36.4,488.2L37.1,489.8L34.7,489.9L34.3,489.0L36.8,489.1L34.2,488.6L34.9,488.6L33.7,487.7Z M26.5,530.0L30.6,530.6L30.5,531.5L27.0,531.1L26.5,530.0Z M30.4,503.0L32.2,505.3L31.2,505.5L28.7,503.9L30.4,503.0Z M24.0,547.3L25.2,547.6L25.2,549.2L24.3,548.9L24.9,549.5L24.0,550.0L24.9,549.8L25.1,550.9L22.6,550.0L23.9,549.8L22.8,548.8L23.2,548.2L24.2,548.4L23.7,548.0L24.4,548.3L23.7,547.9L24.0,547.3Z M29.5,557.6L32.7,559.3L30.9,560.5L29.5,557.6Z M29.6,492.9L31.8,495.2L29.6,495.2L28.4,493.4L29.6,492.9Z M38.0,494.0L39.9,496.4L39.3,496.3L39.3,497.2L38.5,497.3L37.2,495.6L38.9,496.1L37.3,494.8L38.0,494.0Z M33.4,488.6L34.6,490.1L31.6,490.5L30.9,489.9L30.8,489.3L33.4,488.6Z M28.6,508.2L27.9,511.3L26.7,511.3L26.7,509.5L28.6,508.2Z M40.4,479.1L41.7,480.4L41.0,480.9L42.1,481.5L41.2,482.7L41.1,481.5L39.8,480.2L40.4,479.1Z M34.4,557.2L36.2,558.3L36.1,559.8L33.2,557.9L34.4,557.2Z M36.1,493.9L37.1,494.5L36.1,495.5L33.3,494.8L36.1,493.9Z M34.9,485.6L35.9,486.6L37.6,486.6L37.4,488.1L35.3,487.3L34.9,485.6Z M31.9,533.8L32.3,534.7L30.0,536.3L29.7,534.6L31.9,533.8Z M19.8,493.8L21.5,495.3L21.4,496.2L20.4,496.7L19.5,496.6L19.0,494.7L19.8,493.8Z M39.0,504.5L39.0,505.3L37.8,506.0L35.5,505.3L39.0,504.5Z M29.6,492.6L26.4,492.1L27.4,491.0L29.5,491.5L29.6,492.6Z M33.3,511.1L31.9,511.3L34.0,511.2L34.4,512.2L32.3,512.5L31.5,511.7L32.1,510.5L33.3,511.1Z M21.4,545.1L24.0,546.7L21.8,546.6L21.4,545.1Z M38.8,484.9L39.4,486.0L38.8,486.6L36.8,486.1L36.4,485.1L38.3,485.9L38.8,484.9Z M48.2,478.2L48.2,480.8L47.3,480.9L46.5,479.5L48.2,478.2Z M30.7,498.7L32.1,499.3L31.3,499.5L31.5,500.2L30.6,499.3L31.5,500.5L32.3,499.6L32.5,500.9L30.2,500.1L30.7,498.7Z M29.9,505.7L29.2,508.6L28.3,507.1L29.9,505.7Z M37.1,482.0L38.3,482.4L37.5,483.4L38.7,483.5L38.5,482.9L38.7,483.7L36.6,483.7L36.1,482.9L37.1,482.0Z M32.2,495.7L30.8,497.3L29.6,496.6L29.6,496.1L31.8,496.4L32.2,495.7Z M41.5,493.3L41.8,495.0L40.6,495.2L39.8,493.6L41.5,493.3Z M41.0,486.3L41.3,487.0L40.1,487.2L41.1,487.7L40.8,488.1L39.0,486.9L41.0,487.0L41.0,486.3Z M31.5,484.3L32.7,485.8L30.1,484.8L31.5,484.3Z M24.3,508.6L25.7,510.7L23.8,509.6L24.3,508.6Z M30.6,546.8L31.2,547.3L29.3,548.9L29.4,547.6L30.6,546.8Z M40.3,548.6L41.5,549.6L40.7,549.7L41.4,550.4L40.7,550.9L39.8,550.0L40.7,549.7L39.6,549.7L40.3,548.6Z M31.5,486.1L32.6,486.9L30.0,487.3L31.5,486.1Z M24.9,489.9L25.9,490.7L25.9,491.9L24.9,492.2L24.3,490.5L24.9,489.9Z M21.0,548.8L18.8,550.1L21.0,548.8Z M39.3,477.2L39.7,478.5L37.7,478.3L39.3,477.2Z M18.5,561.9L18.8,563.3L17.0,563.6L18.5,561.9Z M38.5,486.9L37.8,488.1L38.9,487.4L39.5,488.3L37.5,488.4L38.5,486.9Z M25.5,549.3L26.4,550.5L26.1,551.9L25.5,549.3Z M34.0,485.7L35.0,487.7L33.4,487.0L34.0,485.7Z M46.9,485.8L48.1,487.1L46.3,487.2L46.9,485.8Z M49.5,485.8L50.5,486.6L49.0,486.4L48.7,487.1L48.4,486.3L49.5,485.8Z M31.2,481.9L33.5,482.5L31.1,482.4L31.2,481.9Z M38.4,511.5L39.4,512.2L37.7,513.0L38.5,512.5L37.7,512.5L38.4,511.5Z M37.5,479.1L39.2,479.8L37.9,480.1L37.1,479.6L37.5,479.1Z M39.7,510.5L40.4,511.2L39.9,511.6L38.9,509.8L39.7,510.5Z M44.8,499.2L45.4,500.8L44.0,500.0L44.8,499.2Z M32.9,481.6L33.6,481.8L31.2,481.6L32.9,481.6Z M29.1,511.1L29.4,512.3L27.9,512.0L29.1,511.1Z M26.3,548.4L26.4,549.0L26.1,547.8L27.0,547.4L27.5,548.7L26.3,548.4Z M32.2,560.0L30.5,561.0L32.2,560.0Z M40.7,484.5L41.3,484.9L40.1,485.7L39.7,484.8L40.7,484.5Z M20.6,551.2L20.0,552.0L20.3,551.5L18.8,551.9L20.6,551.2Z M28.4,547.5L28.5,548.8L27.2,547.7L28.4,547.5Z M16.0,555.5L15.6,556.5L15.0,556.3L15.5,556.7L14.8,556.7L14.8,555.9L16.0,555.5Z M32.1,482.6L32.7,483.3L31.0,483.6L31.7,483.3L30.9,482.7L32.1,482.6Z M40.7,488.7L41.9,489.8L40.5,489.5L41.2,489.3L40.7,488.7Z M41.5,551.6L42.8,553.0L41.5,551.6Z M42.5,502.2L43.3,502.7L42.6,503.6L41.9,503.3L42.5,502.2Z M43.1,503.6L43.4,504.3L41.9,504.3L43.1,503.6Z M34.1,484.3L34.4,485.7L33.2,484.7L34.1,484.3Z M31.1,543.9L31.3,543.3L32.1,544.1L30.9,544.8L31.1,543.9Z M41.5,547.4L41.2,548.1L40.1,547.8L41.5,547.4Z M35.2,482.3L33.8,483.3L35.2,482.3Z M35.2,504.0L36.4,504.7L35.4,505.2L35.2,504.0Z M43.0,482.1L43.9,482.6L43.2,483.5L42.6,482.6L43.0,482.1Z M28.5,549.2L27.5,550.3L27.4,549.3L28.5,549.2Z M18.9,528.3L20.1,529.3L18.9,528.3Z M29.0,500.7L29.1,501.8L28.3,502.0L27.9,501.6L29.0,500.7Z M37.3,490.3L37.7,491.4L36.2,490.8L37.3,490.3Z M20.9,548.4L19.5,549.2L20.9,548.4Z M25.2,553.3L24.3,554.7L25.2,553.3Z M31.7,503.7L32.7,505.0L31.7,503.7Z M41.3,488.1L42.2,488.0L42.2,488.9L41.4,489.0L41.3,488.1Z M32.9,506.5L33.8,508.0L32.9,506.5Z M42.0,480.6L42.6,481.8L41.5,480.9L42.0,480.6Z M35.2,547.0L35.6,547.7L34.0,547.1L35.2,547.0Z M33.6,503.7L34.3,504.4L33.1,504.8L33.6,503.7Z M31.9,483.7L32.9,484.5L31.9,483.7Z M38.2,493.0L38.6,493.4L37.0,493.2L38.2,493.0Z M40.4,497.6L40.8,498.8L40.0,498.3L40.4,497.6Z M45.6,503.3L44.2,503.9L44.2,503.3L45.6,503.3Z M25.3,551.8L25.6,553.0L24.6,552.4L25.3,551.8Z M32.6,480.5L33.6,480.8L32.0,480.8L32.6,480.5Z M39.4,478.6L39.1,479.4L38.1,478.9L39.4,478.6Z M18.9,527.7L20.0,528.6L18.9,527.7Z M42.5,547.8L43.3,548.7L42.5,547.8Z M37.4,484.6L38.1,485.4L37.2,485.2L37.4,484.6Z M31.3,511.6L29.9,512.0L31.3,511.6Z M35.3,513.3L35.2,514.0L34.1,513.7L35.3,513.3Z M25.6,551.4L25.9,552.8L25.6,551.4Z M60.2,492.2L58.9,491.8L60.2,492.2Z M40.8,483.0L40.9,483.9L40.0,483.8L40.8,483.0Z M45.5,489.3L45.6,490.6L45.0,489.8L45.5,489.3Z M32.5,493.7L31.4,494.1L32.5,493.7Z M50.7,476.1L51.4,476.8L50.9,477.2L50.7,476.1Z M32.9,480.1L33.9,480.4L32.9,480.1Z M48.2,485.6L49.0,485.9L48.2,486.3L48.2,485.6Z M34.5,481.1L33.2,481.4L34.5,481.1Z M39.5,488.8L40.4,489.6L39.5,488.8Z M31.7,554.8L32.4,555.4L31.7,554.8Z M38.3,488.8L37.7,489.6L37.5,488.9L38.3,488.8Z M43.0,513.2L44.2,513.6L43.0,513.2Z M18.0,555.6L17.3,556.6L18.0,555.6Z M29.5,509.7L29.1,510.7L29.5,509.7Z M37.3,517.3L37.9,517.7L36.9,517.9L37.3,517.3Z M39.3,489.2L38.4,489.1L39.3,489.2Z M43.3,513.2L44.4,513.5L43.3,513.2Z M35.0,481.5L34.1,481.8L35.0,481.5Z M21.6,548.1L21.4,549.3L21.6,548.1Z M36.4,514.7L36.7,515.9L36.4,514.7Z M37.9,486.6L38.4,486.9L37.6,487.3L37.9,486.6Z M33.4,535.7L33.7,536.3L32.8,536.0L33.4,535.7Z M44.0,498.0L43.6,498.7L44.0,498.0Z M29.0,509.1L28.8,510.1L29.0,509.1Z M38.9,547.8L37.9,548.2L38.9,547.8Z M37.6,543.9L36.5,544.0L37.6,543.9Z M32.4,529.3L31.6,529.5L32.4,529.3Z M28.7,510.5L28.3,511.2L28.7,510.5Z M46.5,480.5L46.9,481.2L46.5,480.5Z M31.3,530.8L30.5,531.2L31.3,530.8Z M35.1,545.9L36.0,546.0L35.1,545.9Z M44.0,498.8L43.7,499.8L44.0,498.8Z M18.4,552.8L17.8,553.3L18.4,552.8Z M21.9,518.3L21.3,518.8L21.9,518.3Z M52.7,505.5L51.9,506.1L52.7,505.5Z M27.5,503.5L28.0,504.1L27.5,503.5Z M37.7,481.5L38.3,481.9L37.7,481.5Z M42.4,482.5L42.0,483.1L42.4,482.5Z M27.8,502.7L28.1,503.4L27.8,502.7Z"}, {"codigo": "AT", "codregion": "3", "nombre_shp": "Región de Atacama", "area_km": 75661.2, "cx": 93.2, "cy": 189.8, "bbox": [71.2, 149.6, 117.5, 224.7], "d": "M113.4,149.9L113.9,150.4L113.8,151.2L112.9,151.9L112.9,152.5L113.9,154.7L113.5,155.8L114.5,157.0L115.8,165.4L113.3,167.3L112.9,170.9L117.5,178.5L117.1,178.6L116.7,179.6L117.1,180.6L116.3,180.5L115.2,181.0L114.9,181.6L114.4,180.9L114.4,182.2L113.3,181.9L113.1,183.0L112.3,182.8L111.7,181.6L110.2,181.6L109.8,182.6L109.3,182.7L108.9,184.5L109.8,185.2L108.9,185.5L108.7,186.9L108.0,187.1L108.0,187.8L107.3,187.5L107.9,189.1L107.2,189.2L107.4,189.8L106.3,190.8L106.4,192.2L105.8,192.7L105.3,195.8L104.6,197.1L103.7,197.0L103.3,198.4L102.8,198.8L102.7,199.9L101.6,200.8L101.5,201.6L100.6,200.8L99.6,203.4L98.8,203.8L98.6,204.5L98.2,204.3L97.8,204.6L98.1,205.2L97.4,205.9L97.7,206.5L97.7,207.9L97.2,208.1L96.7,209.7L96.7,210.6L97.2,211.2L96.2,213.5L96.3,215.0L95.8,216.1L95.9,217.5L94.6,217.7L93.5,218.6L93.7,219.6L92.6,221.1L92.5,222.0L93.3,222.5L93.1,223.2L93.5,223.4L93.5,224.1L93.0,224.0L91.6,224.7L90.4,224.5L88.6,221.9L87.7,221.8L87.3,222.3L86.3,222.0L86.1,221.6L86.5,221.0L86.0,220.3L86.2,219.5L85.0,216.0L82.6,216.3L82.5,217.1L81.5,217.7L80.0,217.5L79.0,218.4L78.5,220.9L77.8,221.5L77.3,221.5L77.4,220.7L76.0,220.3L75.8,218.5L74.6,218.5L73.6,217.7L72.8,218.5L71.6,218.5L71.5,217.8L72.1,217.1L71.5,216.6L71.8,216.2L71.7,215.0L71.2,215.0L71.5,214.4L71.2,213.8L71.8,212.6L73.3,211.6L73.5,210.7L74.4,209.6L74.7,208.8L74.2,207.6L75.0,207.1L75.0,205.8L75.6,205.7L75.9,204.3L76.4,204.0L75.8,202.9L76.5,201.6L76.1,199.4L76.6,199.0L76.5,197.3L77.5,193.6L78.1,192.9L77.9,192.1L78.2,191.5L78.7,192.1L80.1,190.9L80.3,188.5L79.1,186.5L79.6,185.4L79.0,182.9L79.6,181.8L80.1,182.4L80.6,182.2L80.7,180.8L81.3,181.0L81.1,180.5L81.6,179.8L81.0,177.8L81.8,176.0L82.4,175.6L82.1,174.8L82.5,174.4L82.9,172.4L83.2,172.3L82.7,171.6L83.1,170.4L82.9,169.1L83.9,168.4L83.3,167.4L83.7,166.7L83.3,165.8L83.5,163.3L84.1,163.3L84.3,162.3L85.4,162.4L87.3,161.0L88.2,161.0L88.6,160.4L89.1,161.0L89.4,160.7L91.8,161.6L92.5,160.8L94.1,160.4L94.9,161.3L96.3,160.8L97.5,161.2L99.8,161.4L100.8,159.8L101.7,160.1L103.5,159.8L105.7,158.7L106.2,157.4L105.7,157.3L106.3,155.8L105.8,154.9L107.1,153.5L107.0,152.7L106.5,152.4L107.2,151.2L107.6,151.5L109.6,151.1L110.1,151.7L111.6,151.1L111.9,149.9L113.0,149.6L113.4,149.9Z"}, {"codigo": "CO", "codregion": "4", "nombre_shp": "Región de Coquimbo", "area_km": 40575.9, "cx": 80.7, "cy": 244.7, "bbox": [68.5, 216.0, 95.6, 273.2], "d": "M69.3,252.0L69.4,250.2L68.9,249.2L68.5,245.6L69.0,239.1L69.7,237.1L70.0,238.2L71.0,238.2L71.6,237.7L71.4,237.4L71.8,237.2L71.8,236.4L72.3,235.8L72.5,236.4L73.1,236.2L73.4,234.3L72.7,232.9L73.3,232.3L73.7,232.6L73.5,232.1L73.8,231.7L73.9,232.2L74.4,232.0L74.7,231.3L74.6,229.9L73.7,228.6L74.1,226.7L74.6,226.2L73.9,225.0L73.9,223.9L74.3,223.2L73.8,222.3L74.0,221.4L72.8,220.0L72.0,219.6L71.6,218.5L72.8,218.5L73.6,217.7L74.6,218.5L75.8,218.5L76.0,220.3L77.4,220.7L77.3,221.5L77.8,221.5L78.5,220.9L79.0,218.4L80.0,217.5L81.5,217.7L82.5,217.1L82.6,216.3L85.0,216.0L86.2,219.5L86.0,220.3L86.5,221.0L86.1,221.6L86.3,222.0L87.3,222.3L87.7,221.8L88.6,221.9L90.4,224.5L91.6,224.7L93.0,224.0L93.5,224.1L93.7,226.8L94.6,228.1L94.1,229.4L94.6,230.5L93.9,233.0L94.1,233.4L93.3,234.4L93.7,235.0L94.5,234.8L95.6,235.5L95.2,236.8L94.5,236.8L94.3,239.2L92.5,239.9L90.7,239.0L91.2,240.5L90.1,241.6L90.1,242.6L89.3,244.1L89.4,245.8L88.8,246.8L88.9,247.6L88.3,249.3L89.0,251.4L88.3,251.3L87.7,253.0L87.1,253.6L86.4,252.1L85.4,253.9L84.8,261.2L85.7,262.1L85.6,262.8L86.2,263.0L86.3,265.5L87.5,266.2L88.9,266.2L89.9,267.5L88.8,269.2L87.8,268.7L87.3,269.0L88.1,269.5L88.0,270.2L88.5,270.7L88.3,273.1L87.8,272.7L86.9,273.2L86.6,273.0L86.4,271.3L85.3,270.9L85.1,271.4L83.7,270.7L83.5,269.2L83.0,269.4L82.9,268.8L82.3,268.6L79.6,269.7L79.3,269.1L78.1,268.8L78.2,269.5L76.7,270.9L76.1,271.3L75.5,270.5L75.0,271.3L73.8,271.8L71.9,271.0L71.5,271.5L71.0,271.4L71.4,270.4L71.2,268.3L71.7,267.7L71.2,267.4L71.5,266.0L70.7,265.6L71.5,264.2L70.9,263.6L70.8,261.9L70.4,261.1L70.6,259.4L69.8,257.5L69.9,256.4L69.2,253.5L69.3,252.0Z"}, {"codigo": "VS", "codregion": "5", "nombre_shp": "Región de Valparaíso", "area_km": 16323.0, "cx": 77.4, "cy": 284.2, "bbox": [66.7, 268.6, 93.0, 302.8], "d": "M70.5,286.4L70.9,285.7L70.8,284.7L71.4,284.4L70.9,282.6L71.0,281.8L71.3,282.1L71.7,281.9L71.4,280.8L72.0,280.8L72.5,279.6L71.9,277.5L72.5,277.0L72.9,275.3L72.0,274.4L72.0,273.1L71.6,272.5L71.2,272.5L71.0,271.4L71.5,271.5L71.9,271.0L73.8,271.8L75.0,271.3L75.5,270.5L76.1,271.3L76.7,270.9L78.2,269.5L78.1,268.8L79.3,269.1L79.6,269.7L82.3,268.6L82.9,268.8L83.0,269.4L83.5,269.2L83.7,270.7L85.1,271.4L85.3,270.9L86.4,271.3L86.6,273.0L86.9,273.2L87.8,272.7L89.7,274.0L89.5,275.8L90.7,276.5L91.1,277.7L91.1,278.4L90.4,279.2L90.8,279.8L90.8,281.1L92.1,283.4L93.0,284.1L92.4,286.3L91.7,286.4L90.6,287.9L90.0,287.9L89.5,288.4L89.4,289.2L88.6,287.9L87.5,287.8L86.8,286.3L85.6,287.5L84.3,284.9L82.8,285.2L82.5,284.6L80.9,284.6L80.0,284.8L79.5,285.4L78.4,285.5L78.6,286.8L78.2,287.4L78.7,289.4L78.2,289.8L77.8,289.5L77.6,290.0L75.6,290.1L75.4,290.7L75.9,291.4L75.5,292.5L74.6,293.2L73.8,293.3L73.9,296.7L72.4,297.9L73.5,299.3L72.6,299.9L70.9,299.4L70.7,301.3L70.4,301.2L68.4,302.8L68.0,302.2L67.7,302.5L67.2,302.0L66.7,302.2L66.9,301.1L67.4,299.6L69.2,298.5L69.9,296.3L69.7,295.7L70.1,295.5L68.6,293.4L68.8,292.4L69.3,292.1L69.4,291.3L68.6,289.5L68.9,289.0L68.1,287.7L69.2,287.7L69.5,286.3L69.9,286.7L70.5,286.4Z"}, {"codigo": "RM", "codregion": "13", "nombre_shp": "Región Metropolitana de Santiago", "area_km": 15392.0, "cx": 85.5, "cy": 297.3, "bbox": [68.5, 284.6, 96.1, 308.7], "d": "M82.5,284.6L82.8,285.2L84.4,285.0L85.6,287.5L86.7,286.3L87.1,286.5L87.5,287.8L88.1,287.6L89.0,288.2L89.1,289.2L90.0,287.9L90.6,287.9L91.5,286.8L92.1,288.3L91.9,289.6L92.5,290.1L92.3,290.7L92.8,291.0L92.8,291.6L94.0,290.6L94.0,290.3L94.2,290.8L95.7,291.0L96.1,292.2L95.9,292.9L95.5,292.8L95.7,293.4L95.4,293.5L95.2,295.0L94.7,295.5L94.5,298.0L94.8,298.6L94.2,299.6L94.3,300.9L94.9,301.7L94.2,303.0L94.9,303.0L95.4,303.8L94.9,304.6L95.2,305.1L94.6,305.9L95.7,307.0L95.6,308.0L94.3,308.3L94.1,308.7L93.3,308.0L92.5,308.7L92.1,308.5L91.9,307.3L91.2,307.2L90.5,306.4L90.8,305.7L90.4,304.4L89.4,304.2L89.1,304.9L88.0,304.6L88.3,303.6L87.5,302.3L87.5,301.5L86.6,301.0L85.7,301.2L85.5,301.6L84.3,301.7L83.6,302.5L82.8,301.9L82.1,302.6L81.5,302.4L81.1,302.8L81.6,303.5L81.4,304.0L80.2,304.3L80.2,304.9L79.5,305.2L79.9,306.2L77.6,306.9L76.0,306.4L74.4,304.1L73.1,304.9L72.3,303.9L70.6,303.4L70.3,304.2L68.5,303.0L68.8,302.3L70.7,301.3L70.9,299.5L72.6,299.9L73.5,299.3L72.4,297.9L73.9,296.7L73.8,293.3L74.6,293.2L75.5,292.5L75.9,291.4L75.4,290.7L75.6,290.1L77.6,290.0L77.8,289.5L78.2,289.8L78.7,289.4L78.2,287.4L78.6,286.8L78.3,285.6L79.5,285.4L80.0,284.8L80.9,284.6L82.5,284.6Z"}, {"codigo": "LL", "codregion": "10", "nombre_shp": "Región de Los Lagos", "area_km": 48408.4, "cx": 56.1, "cy": 448.6, "bbox": [36.8, 413.8, 70.4, 481.5], "d": "M52.4,436.1L51.1,435.7L49.7,436.5L49.8,437.2L48.8,437.8L49.3,438.1L49.0,438.2L49.7,439.7L49.4,440.0L48.8,439.7L48.9,440.2L48.3,440.6L48.0,440.4L48.1,439.7L47.8,440.4L48.4,440.8L47.5,441.1L48.0,441.0L48.0,441.3L46.9,441.5L46.9,440.9L46.5,441.2L44.5,440.8L45.3,441.7L44.3,441.1L43.4,441.4L42.4,440.9L39.4,440.4L40.0,440.2L40.5,439.1L40.3,438.5L40.7,438.6L41.0,437.9L42.4,438.6L42.1,438.2L42.9,438.0L43.4,436.6L44.3,436.3L44.9,436.6L44.5,436.2L45.3,436.6L45.6,436.2L45.4,435.8L45.3,436.5L44.3,436.1L43.5,436.4L42.7,437.7L42.2,437.6L41.7,438.0L40.9,437.6L41.1,437.2L40.2,436.0L40.7,437.6L40.3,437.4L40.9,437.7L40.7,437.9L39.6,437.2L39.0,437.7L38.9,436.2L38.1,435.5L38.4,435.1L38.1,434.9L38.4,433.2L37.2,429.9L36.8,427.0L38.2,425.9L37.6,424.8L38.4,422.4L38.8,422.3L38.4,421.4L39.5,420.6L40.1,419.4L39.2,417.7L39.6,417.4L39.6,414.7L40.3,413.8L40.7,414.6L41.8,415.0L43.8,414.4L44.5,415.6L48.1,416.0L49.1,415.7L51.6,417.4L51.8,418.6L52.9,419.3L53.4,420.2L55.1,420.7L55.8,421.7L58.2,421.2L59.7,421.6L60.4,421.0L61.6,421.5L63.0,421.4L63.7,420.8L64.9,420.8L66.1,419.6L66.5,420.1L66.9,419.8L66.3,421.3L65.0,422.3L64.9,422.8L65.6,423.5L65.4,424.2L65.7,424.8L66.4,425.2L66.5,426.6L65.9,426.6L65.8,427.0L67.0,428.4L66.6,429.0L66.7,430.0L66.0,430.1L66.8,432.1L65.9,431.8L66.2,432.8L65.7,433.6L66.8,434.9L66.5,436.4L67.0,437.5L66.6,437.3L66.1,438.0L67.4,439.6L67.1,440.0L67.9,441.2L67.7,441.3L68.0,441.9L67.3,442.2L67.7,443.7L67.4,444.3L67.9,445.6L68.3,445.8L68.3,446.9L67.5,447.6L66.2,447.7L65.6,448.3L65.0,447.5L63.7,447.0L63.3,447.3L63.5,447.6L61.9,447.5L62.1,449.6L62.7,450.7L62.6,451.8L64.0,452.2L63.8,453.0L64.3,453.6L63.6,455.0L62.8,455.6L63.1,456.3L62.5,457.0L62.0,456.8L61.9,457.3L62.6,457.9L62.6,458.7L62.1,459.1L62.7,460.4L62.4,460.8L62.8,461.5L63.4,461.8L64.4,463.3L65.4,463.6L65.4,464.4L67.8,465.5L68.3,466.1L67.9,466.7L68.2,468.2L67.5,467.9L66.7,468.5L65.8,468.3L66.0,469.4L65.4,469.5L65.7,470.0L65.4,470.7L66.1,470.6L66.6,471.2L66.0,471.7L66.3,471.9L66.2,472.3L67.6,472.2L67.9,473.0L68.6,473.0L68.7,473.7L69.7,473.7L70.4,474.2L70.0,474.6L70.1,475.0L69.2,475.1L67.9,476.6L67.8,477.5L68.6,477.7L68.6,478.4L69.2,478.6L69.4,479.3L68.2,481.5L67.4,481.3L66.9,480.3L67.2,479.5L66.5,479.1L64.9,479.0L65.1,479.4L64.7,479.7L63.8,479.2L63.3,479.5L62.9,479.1L63.3,478.5L62.7,478.1L61.9,478.4L61.7,477.5L60.5,477.4L61.0,476.9L60.1,476.4L60.6,476.1L59.7,474.5L58.7,474.8L58.4,475.5L57.7,475.6L57.3,476.7L55.7,476.0L55.0,476.4L53.6,476.2L53.1,475.7L53.5,474.8L53.0,473.9L52.3,475.7L51.7,475.7L51.1,475.0L49.5,475.7L50.7,474.7L51.0,473.9L52.0,473.4L51.9,472.8L51.5,473.3L50.2,473.1L49.5,472.0L48.9,470.9L49.5,469.6L49.3,468.3L50.5,467.4L52.1,466.8L51.5,464.9L52.2,463.1L53.4,463.1L53.5,463.7L54.6,464.5L52.8,461.8L53.0,461.5L54.2,462.1L54.3,461.1L52.6,459.7L52.3,458.5L52.5,457.4L52.9,457.6L53.1,457.3L52.3,455.9L52.9,454.0L54.9,454.2L56.6,455.2L57.5,455.2L57.4,454.6L57.2,455.1L56.9,454.8L57.1,454.6L55.5,454.0L54.5,452.8L54.5,452.2L53.6,451.6L53.3,450.4L52.8,450.7L52.5,450.2L53.5,449.3L53.9,449.4L54.0,448.9L54.9,448.9L56.2,448.3L57.1,449.3L57.2,451.1L58.1,452.3L58.1,453.8L58.9,453.6L58.5,452.8L58.5,451.6L57.8,450.3L58.1,449.7L59.2,449.4L58.1,449.5L57.9,448.5L58.1,447.9L59.5,448.0L58.1,447.9L57.8,447.5L58.3,444.5L57.4,444.4L56.8,445.7L56.1,445.7L55.9,445.1L55.7,445.7L55.3,445.6L55.5,445.2L54.7,445.0L54.7,445.5L52.9,444.5L53.0,443.9L52.0,443.4L53.2,442.7L53.2,442.1L55.2,440.2L56.1,440.5L57.8,440.1L60.0,438.9L59.8,437.8L60.4,436.2L60.0,436.0L60.0,435.5L60.5,434.2L59.9,433.8L59.7,434.3L60.2,434.8L58.9,439.0L56.3,439.9L55.2,439.6L54.9,438.2L54.4,437.9L53.9,436.7L53.8,437.1L52.7,435.9L52.4,436.1Z M37.7,441.1L37.3,441.4L38.1,442.0L37.7,442.4L37.5,441.9L37.2,442.4L37.0,441.8L36.4,442.1L36.4,441.7L36.1,442.4L38.1,442.9L38.6,442.5L39.0,442.8L40.7,441.4L41.4,441.9L41.9,441.3L43.5,442.0L42.7,442.8L43.6,443.3L42.7,443.1L43.0,443.6L42.5,443.7L42.2,444.2L42.8,444.4L42.9,444.1L43.4,445.3L44.3,446.3L44.1,447.0L43.4,446.9L43.3,447.8L44.2,448.1L44.6,448.7L45.1,448.6L45.1,449.2L44.4,449.6L44.9,449.3L45.4,449.7L45.2,450.9L44.1,450.8L44.1,450.4L43.5,451.0L42.5,450.9L40.7,451.8L41.1,452.7L40.5,453.5L42.0,454.4L41.3,454.2L41.1,454.6L40.0,455.0L39.7,454.5L39.1,454.4L39.7,454.1L40.0,453.1L39.9,452.5L39.5,452.5L39.6,453.4L39.3,453.2L38.8,454.5L39.6,454.7L39.0,455.8L40.2,456.7L40.9,456.7L40.6,457.2L41.3,457.4L41.6,458.2L42.5,458.3L43.3,459.0L43.7,460.6L43.3,460.9L43.2,460.2L43.3,460.6L43.0,460.3L42.1,460.7L41.5,459.2L41.4,459.9L41.0,460.0L41.6,460.0L41.9,460.7L41.3,460.6L40.9,460.1L39.5,460.0L41.5,461.2L41.5,461.6L41.1,461.6L41.8,461.8L41.5,462.2L42.5,462.2L43.0,463.9L42.1,463.2L41.4,463.6L42.9,463.9L43.4,465.0L42.7,464.8L42.5,464.4L42.5,464.8L41.3,464.7L41.3,465.2L40.3,465.3L39.9,464.3L39.6,466.3L40.7,467.4L40.8,468.3L38.9,468.2L37.8,467.6L38.7,468.2L38.9,468.9L39.0,469.9L38.5,469.7L38.2,470.2L37.7,470.1L37.1,469.2L36.3,469.0L36.0,469.5L35.7,468.8L34.6,469.6L34.0,468.8L31.8,468.4L30.2,467.3L31.1,465.3L31.7,465.0L31.3,464.7L31.4,464.0L31.9,464.1L32.8,463.1L32.3,462.5L33.1,462.1L32.8,461.2L33.6,460.9L33.9,460.1L33.6,458.5L34.0,458.4L33.8,457.6L34.2,457.4L34.3,456.4L33.8,454.5L33.2,454.1L34.0,450.8L33.6,449.7L34.1,448.5L35.3,447.5L35.2,446.7L35.6,446.2L35.2,444.8L35.7,444.1L35.2,443.9L35.9,443.7L36.1,443.0L35.2,442.1L35.3,441.5L35.6,441.6L36.0,441.0L36.7,441.4L37.4,440.8L37.7,441.1Z M41.8,451.7L42.9,452.1L42.9,453.1L44.6,454.5L44.7,455.3L43.9,455.1L44.1,454.5L44.5,454.7L43.0,453.9L42.6,453.2L41.2,453.3L41.7,452.7L40.9,451.9L41.8,451.7Z M25.5,471.8L27.6,472.9L28.2,473.7L26.1,474.0L25.1,474.7L24.1,472.6L25.5,472.7L25.5,471.8Z M42.7,461.1L45.6,462.9L43.6,462.5L42.9,462.2L42.8,461.7L42.2,461.9L41.7,461.4L42.7,461.1Z M41.8,455.1L42.2,455.9L42.0,456.9L42.8,456.9L42.3,457.4L42.0,457.5L41.8,456.5L40.8,456.3L40.3,456.5L39.7,456.1L40.0,455.5L40.6,455.6L41.8,455.1Z M49.5,440.5L50.4,441.8L50.3,442.5L49.8,442.5L48.6,441.5L49.2,441.8L49.0,441.3L49.6,441.8L48.8,441.0L49.3,441.0L49.0,440.5L49.5,440.5Z M39.5,468.3L40.8,468.9L40.6,469.6L39.3,469.4L38.8,468.3L39.5,468.3Z M50.0,457.2L50.5,458.0L51.3,457.8L51.4,458.8L50.7,458.3L50.9,459.0L51.1,458.9L51.0,459.3L49.8,457.7L50.0,457.2Z M57.4,446.3L57.7,446.6L57.5,448.0L55.8,447.3L56.3,446.3L56.5,446.8L56.8,446.3L57.4,446.3Z M49.4,449.8L49.4,450.2L48.4,451.0L47.7,449.8L48.0,449.7L48.3,450.3L48.6,450.1L48.4,449.9L48.8,449.9L48.3,449.9L48.7,449.5L49.4,449.8Z M44.7,446.9L45.2,448.2L43.7,447.5L44.7,446.9Z M50.8,438.9L51.8,439.6L51.3,439.5L51.5,439.8L51.2,439.9L50.8,439.6L50.9,440.1L50.4,440.0L50.3,439.1L50.8,438.9Z M41.6,465.9L42.1,467.5L41.3,466.9L41.1,465.9L41.5,465.5L41.6,465.9Z M45.4,456.0L46.9,456.4L46.8,456.7L46.3,456.6L45.2,456.1L45.4,456.0Z M43.8,455.9L44.2,455.9L43.5,456.4L42.5,456.1L43.1,455.9L43.4,456.3L43.0,455.7L43.8,455.9Z M42.4,465.1L42.4,465.6L43.0,465.7L42.9,465.1L43.2,465.7L41.9,466.2L42.3,465.9L41.9,465.1L42.4,465.1Z M40.1,465.8L40.8,466.1L40.7,467.0L39.7,466.3L40.1,465.8Z M57.9,444.7L57.6,446.2L57.2,445.9L57.9,444.7Z M46.8,449.8L47.6,450.3L47.1,450.3L47.3,450.8L47.1,450.2L47.4,450.2L46.5,449.8L46.8,449.8Z M32.4,468.8L32.7,469.9L32.0,470.2L32.1,469.0L32.4,468.8Z M48.3,442.9L49.3,443.2L48.0,443.4L48.6,443.3L48.3,442.9Z M45.8,453.1L45.8,453.5L44.9,453.6L44.9,453.0L45.8,453.1Z M49.7,455.5L50.2,455.7L50.1,456.5L50.0,456.0L49.3,455.9L49.7,455.5Z M47.3,455.4L47.5,455.9L47.1,456.1L47.2,455.4L46.8,455.8L47.1,454.9L47.3,455.4Z M46.5,450.1L46.9,450.4L45.8,450.4L46.5,450.1Z M46.2,452.0L45.9,452.7L45.4,452.5L46.2,452.0Z M48.4,440.9L48.0,441.6L47.5,441.4L48.4,440.9Z M50.5,437.1L50.8,437.6L50.2,437.8L49.9,437.2L50.5,437.1Z M43.2,454.7L42.9,455.6L42.6,455.6L43.2,454.7Z M46.3,453.4L46.7,453.5L46.5,454.1L46.1,453.1L46.3,453.4Z M46.0,455.3L46.5,455.8L45.6,455.7L46.0,455.3Z"}, {"codigo": "LR", "codregion": "14", "nombre_shp": "Región de Los Ríos", "area_km": 18245.1, "cx": 53.0, "cy": 407.6, "bbox": [39.9, 397.0, 70.2, 421.7], "d": "M52.2,397.0L52.6,397.5L51.7,398.7L51.7,399.6L52.3,399.0L52.5,399.3L53.2,399.1L53.2,399.6L54.7,399.6L55.1,400.1L56.9,399.6L57.1,400.4L58.2,400.3L59.6,401.0L61.3,400.2L60.6,401.0L61.4,401.3L62.8,401.0L65.5,399.4L66.4,399.6L66.7,400.3L67.8,400.9L68.7,400.8L69.0,401.9L68.5,403.4L69.1,404.0L68.5,404.8L69.2,406.2L68.8,406.8L69.1,407.2L69.6,407.1L70.2,408.1L68.9,410.2L69.1,411.5L68.7,411.7L66.9,411.2L67.3,412.1L66.9,412.7L67.3,412.9L66.9,413.5L67.9,415.0L68.5,414.5L68.9,414.8L69.3,416.1L68.8,416.2L68.8,416.8L68.1,417.4L67.4,416.8L66.9,417.0L66.4,419.4L66.0,419.4L66.1,419.9L65.4,420.1L64.9,420.8L63.7,420.8L63.3,421.3L61.6,421.5L60.4,421.0L59.7,421.6L58.2,421.2L55.8,421.7L55.1,420.7L53.4,420.2L52.9,419.3L51.8,418.6L51.6,417.4L49.1,415.7L48.1,416.0L44.5,415.6L43.8,414.4L41.8,415.0L40.7,414.5L40.5,413.9L40.0,413.8L39.9,413.2L41.0,412.0L40.8,410.5L40.2,409.7L40.6,409.0L41.8,408.9L41.8,408.4L42.9,408.1L43.6,407.0L44.2,407.3L44.5,408.1L44.3,408.5L44.5,408.2L44.9,408.6L44.9,407.8L46.1,409.3L45.9,408.7L46.4,408.6L46.6,408.0L47.1,408.5L46.6,407.4L47.8,407.6L48.4,408.4L48.0,408.1L48.3,407.6L47.6,407.1L47.7,407.6L47.3,407.7L47.0,407.1L46.8,407.4L46.8,407.0L46.8,407.4L46.5,407.4L46.4,406.8L47.5,405.8L47.9,406.2L47.6,405.8L47.1,406.4L46.6,406.1L46.9,404.9L48.7,404.1L49.0,404.4L49.0,404.1L48.3,404.4L47.6,404.2L48.6,403.3L47.9,403.6L48.5,402.8L47.9,403.7L47.9,402.9L47.7,403.2L48.4,402.5L47.8,403.0L47.9,402.4L47.5,403.0L47.7,403.8L46.9,403.7L47.4,404.0L47.1,404.7L46.8,404.2L46.8,404.7L46.0,405.1L46.5,405.4L46.2,407.1L46.1,406.7L45.8,406.8L46.1,407.0L45.6,407.1L45.3,406.3L45.5,407.1L44.5,407.4L44.5,404.2L45.2,403.9L45.1,403.5L46.2,402.3L46.1,401.8L46.6,401.5L46.5,400.1L47.2,399.6L46.8,398.8L48.0,399.3L49.0,398.8L49.9,397.2L51.0,397.6L52.2,397.0Z M45.9,407.1L46.6,407.8L46.2,408.7L45.6,408.4L45.3,407.9L45.7,407.8L44.8,407.6L45.9,407.1Z"}, {"codigo": "AR", "codregion": "9", "nombre_shp": "Región de La Araucanía", "area_km": 31837.6, "cx": 60.5, "cy": 385.3, "bbox": [42.9, 367.0, 81.1, 403.2], "d": "M53.5,367.0L54.1,367.7L55.2,367.6L55.5,368.4L57.4,368.0L57.6,369.8L58.7,371.5L59.9,372.2L61.0,372.1L62.6,373.5L63.0,374.3L63.7,374.5L64.9,374.2L66.2,375.7L67.6,374.8L68.2,375.0L68.7,375.8L68.4,376.9L68.8,377.3L68.5,378.0L68.9,378.7L68.6,379.0L69.4,379.8L70.0,378.5L70.8,378.6L71.1,377.9L72.4,377.4L72.8,376.2L73.3,375.8L74.3,375.9L74.6,376.2L77.4,375.9L78.7,377.3L78.2,378.7L78.7,379.4L78.9,381.9L80.9,383.8L81.1,384.8L80.0,386.1L80.3,386.7L79.7,387.8L77.3,387.6L76.0,388.7L75.3,388.5L74.4,389.7L72.5,390.7L72.4,391.6L73.0,392.8L72.7,394.6L73.3,396.9L73.0,398.1L72.1,398.5L72.3,399.9L71.9,400.6L71.1,401.3L71.5,401.8L72.0,401.8L71.5,403.2L70.0,403.0L69.8,402.4L68.8,401.9L68.6,400.8L67.8,400.9L66.7,400.3L66.4,399.6L65.5,399.4L62.8,401.0L61.4,401.3L60.6,401.0L61.3,400.2L59.6,401.0L58.2,400.3L57.1,400.4L56.9,399.6L55.1,400.1L54.7,399.6L53.2,399.6L53.2,399.1L52.5,399.3L52.3,399.0L51.7,399.6L51.7,398.7L52.6,397.5L52.2,397.0L51.5,397.1L51.0,397.6L49.9,397.2L49.0,398.8L48.0,399.3L46.8,398.8L47.3,398.6L47.0,396.5L45.7,391.7L43.3,385.9L42.9,382.8L43.5,382.6L44.8,381.3L45.7,382.0L45.7,382.8L46.3,382.9L46.4,382.0L45.8,381.6L45.9,380.9L45.4,380.8L45.6,380.3L47.1,379.1L47.4,378.4L48.3,378.1L48.4,377.5L49.1,377.4L49.1,376.0L47.3,375.0L47.6,374.0L48.5,373.6L48.5,372.1L49.6,371.5L49.9,370.9L49.6,370.4L49.9,369.3L49.2,369.1L48.8,369.4L48.5,368.8L49.1,368.6L49.2,367.6L50.1,367.8L53.5,367.0Z"}, {"codigo": "BI", "codregion": "8", "nombre_shp": "Región del Bío-Bío", "area_km": 24021.6, "cx": 57.9, "cy": 365.6, "bbox": [40.5, 346.8, 78.8, 382.9], "d": "M46.3,379.5L45.4,380.7L45.9,380.9L45.8,381.6L46.4,382.0L46.3,382.9L45.7,382.8L45.7,382.0L44.8,381.3L43.5,382.6L42.9,382.8L42.7,381.1L43.2,380.1L42.9,378.9L43.6,378.3L43.8,375.7L42.6,372.3L40.8,369.4L40.7,367.3L41.7,366.1L41.8,364.8L41.3,363.3L40.5,363.1L40.5,362.5L40.9,361.9L40.7,361.8L41.0,360.2L41.9,359.2L42.5,360.2L43.7,360.2L44.6,360.9L46.3,360.6L47.5,359.6L48.1,358.6L47.8,358.0L48.2,357.7L47.6,356.6L48.1,353.9L47.2,352.6L47.5,352.1L47.8,352.5L48.4,352.1L47.9,351.5L48.6,349.8L48.9,350.1L48.7,351.7L50.3,351.9L50.9,350.0L50.2,349.2L50.6,348.2L50.9,348.2L50.9,348.8L51.2,348.5L51.7,346.8L52.9,347.1L53.1,348.0L52.7,348.2L53.1,349.6L53.6,349.6L53.5,350.0L54.0,349.8L54.2,350.5L55.1,350.7L56.1,351.9L56.0,353.4L56.8,354.0L56.3,354.2L56.3,354.7L55.3,354.6L55.2,355.2L57.1,355.5L57.3,354.8L58.0,355.0L57.9,355.3L59.0,355.1L59.8,356.3L61.7,357.1L61.8,357.6L60.7,358.2L60.5,360.1L62.2,360.1L62.7,359.8L63.6,360.0L63.5,359.6L63.9,359.5L64.6,360.0L65.9,359.9L67.3,358.5L68.9,359.2L70.7,359.0L70.8,357.0L71.4,356.7L72.8,358.2L73.2,357.8L74.8,358.6L77.3,358.5L76.7,359.1L77.0,360.3L76.2,360.6L76.0,361.5L75.5,361.5L76.0,362.9L75.8,363.3L76.5,363.7L77.0,365.2L76.5,366.1L76.8,367.0L75.9,367.7L75.6,368.8L76.4,370.0L76.5,370.9L76.9,371.1L76.0,371.8L76.6,371.8L77.1,372.4L77.0,373.4L77.8,373.8L77.9,375.1L78.8,375.8L78.8,376.2L78.0,376.4L77.4,375.9L74.6,376.2L74.3,375.9L73.3,375.8L72.8,376.2L72.4,377.4L71.1,377.9L70.8,378.6L70.0,378.5L69.4,379.8L68.6,379.0L68.9,378.7L68.5,378.0L68.8,377.3L68.4,376.9L68.7,375.8L68.2,375.0L67.6,374.8L66.2,375.7L64.9,374.2L63.7,374.5L63.0,374.3L62.6,373.5L61.0,372.1L59.9,372.2L58.7,371.5L57.6,369.8L57.4,368.0L56.8,368.4L55.2,368.4L55.2,367.6L54.1,367.7L53.4,366.9L51.3,367.6L49.2,367.6L49.1,368.6L48.5,368.8L48.8,369.4L49.2,369.1L49.9,369.3L49.6,370.4L49.9,370.9L49.6,371.5L48.5,372.1L48.5,373.6L47.6,374.1L47.3,375.2L49.1,376.0L49.1,377.4L48.4,377.5L48.3,378.1L47.4,378.4L47.1,379.1L46.3,379.5Z M42.8,356.1L42.8,356.7L43.8,357.5L43.0,357.4L42.8,358.0L42.3,357.1L42.8,356.1Z M36.8,379.9L37.9,380.8L37.6,381.7L36.9,381.7L36.8,379.9Z"}, {"codigo": "NB", "codregion": "16", "nombre_shp": "Región de Ñuble", "area_km": 13104.4, "cx": 64.2, "cy": 350.4, "bbox": [51.9, 339.0, 78.5, 360.1], "d": "M59.5,355.6L59.0,355.1L57.9,355.3L58.0,355.0L57.6,354.8L57.2,354.9L57.1,355.5L55.2,355.2L55.3,354.6L56.3,354.7L56.3,354.2L56.8,354.0L56.0,353.4L56.1,351.9L55.1,350.7L54.2,350.5L54.0,349.8L53.5,350.0L53.6,349.6L53.1,349.6L52.7,348.2L53.1,348.0L52.9,347.1L51.9,346.8L53.0,343.8L52.9,340.6L53.6,339.0L54.7,339.3L55.1,339.8L55.3,339.2L56.2,340.3L57.4,340.2L57.3,341.5L57.6,341.6L58.7,342.1L59.3,341.7L59.6,342.6L58.6,342.6L59.1,343.5L60.0,343.1L60.5,343.6L61.1,342.6L62.5,343.3L63.0,341.1L63.4,341.3L63.4,341.7L64.6,342.6L64.8,343.5L67.1,343.4L68.7,345.2L70.5,346.1L72.0,346.2L72.8,347.8L73.6,348.0L73.8,348.5L74.8,346.7L75.4,347.1L77.0,345.3L77.8,345.8L77.7,346.9L78.1,347.3L77.8,349.9L78.5,351.1L77.7,351.6L77.4,350.9L77.0,351.0L76.8,353.3L76.1,353.8L76.9,354.1L76.5,355.1L77.4,355.3L77.2,356.0L75.5,356.2L76.3,356.6L77.3,358.5L74.8,358.6L73.2,357.8L72.8,358.2L71.4,356.7L70.8,357.0L70.7,359.0L68.9,359.2L67.3,358.5L65.9,359.9L64.6,360.0L63.9,359.5L63.5,359.6L63.6,360.0L62.7,359.8L62.2,360.1L60.6,360.1L60.7,358.2L61.9,357.4L59.8,356.3L59.5,355.6Z"}, {"codigo": "ML", "codregion": "7", "nombre_shp": "Región del Maule", "area_km": 30321.9, "cx": 74.2, "cy": 333.0, "bbox": [53.3, 315.7, 88.4, 348.5], "d": "M64.0,315.7L65.7,318.0L67.0,318.5L67.4,318.2L68.6,320.2L69.1,319.9L68.9,319.5L69.2,318.7L70.0,319.2L71.0,319.0L72.0,319.5L72.4,319.1L72.7,319.6L73.4,319.7L73.1,319.3L73.3,318.3L74.7,317.6L74.9,318.2L75.6,318.4L76.7,317.5L77.2,318.2L78.0,317.6L79.2,319.0L80.3,318.6L81.2,319.0L81.3,318.7L81.9,318.8L84.0,321.1L84.1,320.6L85.2,320.1L86.1,321.2L86.9,321.0L87.7,321.4L87.5,324.3L86.1,324.9L85.4,324.7L84.6,326.0L84.8,326.6L85.7,326.9L86.7,326.9L86.9,327.5L86.4,328.2L86.5,329.5L87.6,330.5L87.0,330.6L87.4,332.0L86.8,332.6L87.8,334.5L87.5,335.2L88.4,335.6L86.9,336.8L86.8,337.4L87.7,337.6L86.9,338.4L87.5,338.8L87.6,339.6L87.0,340.0L86.9,341.7L85.9,342.1L85.3,341.5L84.6,341.4L84.7,342.0L83.9,343.2L82.8,343.7L83.1,344.3L82.7,345.0L83.2,345.8L82.7,346.5L82.4,346.5L82.2,346.1L81.6,346.5L81.2,345.9L80.8,346.3L80.3,345.9L80.2,347.2L79.0,347.8L77.8,347.1L77.8,345.8L77.0,345.3L75.4,347.1L74.6,346.9L73.8,348.5L73.6,348.0L72.8,347.8L72.0,346.2L70.5,346.1L68.7,345.2L67.1,343.4L64.8,343.5L64.6,342.6L63.4,341.7L63.4,341.3L63.0,341.1L62.5,343.3L61.1,342.6L60.5,343.6L60.0,343.1L59.1,343.5L58.6,342.6L59.6,342.6L59.6,342.0L57.3,341.5L57.4,340.2L56.2,340.3L55.3,339.2L55.1,339.8L54.7,339.3L53.4,339.2L53.3,338.5L56.4,335.3L56.2,333.6L55.4,331.9L55.7,331.2L57.5,329.4L57.3,328.2L58.6,326.9L59.0,325.2L61.5,323.2L61.9,319.4L63.5,315.9L64.0,315.7Z"}, {"codigo": "LI", "codregion": "6", "nombre_shp": "Región del Libertador Bernardo O'Higgins", "area_km": 16349.0, "cx": 78.0, "cy": 311.5, "bbox": [63.6, 301.0, 92.7, 321.4], "d": "M64.0,311.9L63.7,311.1L64.7,310.0L64.8,308.9L64.3,305.9L66.8,301.9L66.7,302.2L67.2,302.0L67.5,302.5L68.0,302.2L67.9,302.5L70.3,304.2L70.6,303.4L72.3,303.9L73.1,304.9L74.4,304.1L76.0,306.4L77.6,306.9L79.9,306.2L79.5,305.2L80.2,304.9L80.2,304.3L81.4,304.0L81.6,303.5L81.1,302.8L81.5,302.4L82.1,302.6L82.8,301.9L83.6,302.5L84.3,301.7L85.5,301.6L85.7,301.2L86.6,301.0L87.5,301.5L87.5,302.3L88.3,303.6L88.0,304.6L89.1,304.9L89.4,304.2L90.4,304.4L90.8,305.7L90.5,306.4L92.1,307.6L92.7,310.6L91.7,312.0L91.0,312.2L89.8,314.4L89.8,315.7L88.5,316.8L88.5,317.2L89.3,317.7L88.1,320.2L88.1,321.1L87.7,321.4L86.9,321.0L86.1,321.2L85.2,320.1L84.1,320.6L84.0,321.1L81.9,318.8L81.3,318.7L81.2,319.0L80.3,318.6L79.2,319.0L78.0,317.6L77.2,318.2L76.7,317.5L75.6,318.4L74.9,318.2L74.7,317.6L73.3,318.3L73.1,319.3L73.4,319.7L72.7,319.6L72.4,319.1L72.0,319.5L71.0,319.0L70.0,319.2L69.2,318.7L68.9,319.5L69.1,319.9L68.6,320.2L67.3,318.2L67.0,318.5L65.7,318.0L65.1,317.0L64.5,316.7L64.4,316.1L63.6,315.7L64.0,311.9Z"}]};
+
+        const ATOMIC_DIMENSIONS = [
+          {
+            index: '01',
+            title: 'EL PRODUCTO',
+            description: 'Plataforma orientada esencialmente a periodistas y recolectores de información para consultar indicadores del INE, seleccionar regiones y comparar resultados verificables hacia la ciudadanía.',
+            keyword: 'PROPÓSITO',
+            stage: 'Definición',
+            icon: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'
+          },
+          {
+            index: '02',
+            title: 'PRINCIPIOS',
+            description: 'Transparencia, accesibilidad, comprensión y trazabilidad. Toda cifra debe tener una fuente identificable y conservar su rigurosidad al traducirse a lenguaje ciudadano.',
+            keyword: 'CONFIANZA',
+            stage: 'Definición',
+            icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>'
+          },
+          {
+            index: '03',
+            title: 'TOKENS',
+            description: 'Definición de la identidad visual mediante una escala cromática azul, tipografías, espaciados, dimensiones y propiedades gráficas consistentes.',
+            keyword: 'CONSISTENCIA',
+            stage: 'Fundación',
+            icon: '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2Z"/>'
+          },
+          {
+            index: '04',
+            title: 'ÁTOMOS',
+            description: 'Elementos mínimos de interacción: botones, etiquetas, selectores, campos, iconos y cifras estadísticas.',
+            keyword: 'ELEMENTOS',
+            stage: 'Fundación',
+            icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/>'
+          },
+          {
+            index: '05',
+            title: 'MOLÉCULAS',
+            description: 'Agrupación de elementos básicos para formar componentes funcionales: tarjetas estadísticas, selectores regionales, leyendas cartográficas y fuentes.',
+            keyword: 'COMPOSICIÓN',
+            stage: 'Composición',
+            icon: '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>'
+          },
+          {
+            index: '06',
+            title: 'ORGANISMOS',
+            description: 'Integración de componentes complejos: cabecera, navegación, fichas regionales, mapas, tablas y bloques explicativos.',
+            keyword: 'ESTRUCTURA',
+            stage: 'Composición',
+            icon: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>'
+          },
+          {
+            index: '07',
+            title: 'PLANTILLAS Y PÁGINAS',
+            description: 'Separación entre la estructura visual reutilizable y las páginas que incorporan datos reales de los boletines del INE. Adaptación a dispositivos móviles y computadores.',
+            keyword: 'ESCALABILIDAD',
+            stage: 'Operación',
+            icon: '<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>'
+          },
+          {
+            index: '08',
+            title: 'ESTADOS',
+            description: 'Representación de situaciones de interacción y funcionamiento: carga, ausencia de datos, errores, información no disponible, selección y foco.',
+            keyword: 'RESPUESTA',
+            stage: 'Operación',
+            icon: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'
+          },
+          {
+            index: '09',
+            title: 'DATOS Y VOZ',
+            description: 'Normalización de porcentajes, puntos porcentuales, fechas y fuentes. Definición de un lenguaje ciudadano que facilite la comprensión sin perder precisión estadística.',
+            keyword: 'COMUNICACIÓN',
+            stage: 'Ética',
+            icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
+          },
+          {
+            index: '10',
+            title: 'ACCESIBILIDAD E IA',
+            description: 'Contraste, legibilidad, navegación mediante foco, textos alternativos y transparencia sobre el uso de inteligencia artificial en el procesamiento y presentación de información.',
+            keyword: 'RESPONSABILIDAD',
+            stage: 'Ética',
+            icon: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+          }
+        ];
+
+        const ANNOTATIONS = [
+          {
+            id: 'identity',
+            num: '1',
+            title: 'IDENTIDAD VISUAL',
+            desc: 'Tonalidades azules, tipografía amigable y componentes consistentes para generar una experiencia cercana, institucional y accesible.',
+            target: 'Cabecera institucional y escala cromática'
+          },
+          {
+            id: 'organization',
+            num: '2',
+            title: 'ORGANIZACIÓN DE LA INFORMACIÓN',
+            desc: 'Tarjetas estadísticas, selectores territoriales y visualizaciones que permiten identificar rápidamente los indicadores relevantes.',
+            target: 'Mapa territorial INE y fichas métricas'
+          },
+          {
+            id: 'context',
+            num: '3',
+            title: 'CONTEXTUALIZACIÓN DE LOS DATOS',
+            desc: 'Incorporación de fuentes, variaciones temporales y comparaciones regionales para facilitar la interpretación de los resultados.',
+            target: 'Comparativa nacional, variación pp y boletín'
+          },
+          {
+            id: 'citizen',
+            num: '4',
+            title: 'EXPERIENCIA CIUDADANA',
+            desc: 'Diseñada para periodistas, recolectores de información y ciudadanía mediante navegación simplificada, explicaciones accesibles y adaptación multidispositivo.',
+            target: 'Lectura periodística y filtros territoriales'
+          }
+        ];
+
+        const COLOR_TOKENS_LIGHT = [
+          { token: '--azul-tinta', hex: '#0B2545', contrast: '15,1:1 AAA (sobre #FFF)' },
+          { token: '--azul-ine', hex: '#1D4ED8', contrast: '6,7:1 AA+ (sobre #FFF)' },
+          { token: '--celeste-acento', hex: '#0284C7', contrast: '4,6:1 AA (sobre #FFF)' },
+          { token: '--superficie', hex: '#F8FBFF', contrast: '14,3:1 AAA (con tinta)' },
+          { token: '--borde', hex: '#DCE7F3', contrast: 'Separador 1px' },
+          { token: '--fondo-lienzo', hex: '#F4F8FC', contrast: '14,0:1 AAA (con tinta)' }
+        ];
+
+        const COLOR_TOKENS_DARK = [
+          { token: '--azul-tinta', hex: '#F0F6FC', contrast: '15,4:1 AAA (sobre #0C192C)' },
+          { token: '--azul-ine', hex: '#7DD3FC', contrast: '10,6:1 AAA (sobre #0C192C)' },
+          { token: '--celeste-acento', hex: '#38BDF8', contrast: '8,4:1 AAA (sobre #0C192C)' },
+          { token: '--superficie', hex: '#0F1F35', contrast: '13,2:1 AAA (con #F0F6FC)' },
+          { token: '--borde', hex: '#1E334D', contrast: 'Separador 1px' },
+          { token: '--fondo-lienzo', hex: '#07111F', contrast: '16,5:1 AAA (con #E6F0FA)' }
+        ];
+
+        const CANVAS_BOXES = [
+          { n: '1', label: 'Usuarios esenciales', text: 'Periodistas y recolectores de información.' },
+          { n: '2', label: 'Problema', text: 'Boletines PDF extensos frenan la verificación rápida.' },
+          { n: '3', label: 'Propuesta de valor', text: 'Mapa + ficha regional con cita exacta al boletín.' },
+          { n: '4', label: 'Fuente de datos', text: 'API /regiones (Boletín ENE 335) + ZIP territorial.' },
+          { n: '5', label: 'Flujo principal', text: 'Elegir región, contrastar con Chile y copiar fuente.' },
+          { n: '6', label: 'Regla de rigor', text: 'Cero cifras estimadas; unidades normalizadas (% y pp).' },
+          { n: '7', label: 'Dispositivos', text: 'Escritorio en redacción y móvil en reporteo.' },
+          { n: '8', label: 'Resultado medible', text: 'Consulta verificable en menos de 10 segundos.' }
+        ];
+
+        const PRINCIPLES = [
+          { n: '01', title: 'Toda cifra con su fuente', text: 'Ningún número aparece sin boletín, edición, fecha de publicación y enlace al PDF oficial.' },
+          { n: '02', title: 'Cero datos inventados', text: 'Si un registro falta en el boletín, se muestra «No consta» en lugar de interpolar o estimar.' },
+          { n: '03', title: 'Unidades sin ambigüedad', text: 'Se distingue siempre porcentaje (%) de variación en puntos porcentuales (pp) con coma decimal.' },
+          { n: '04', title: 'Velocidad para prensa', text: 'Periodistas y recolectores acceden a la cifra regional y su respaldo en máximo dos interacciones.' }
+        ];
+
+        const MACRO_VIEWBOX = {
+          all: '0 0 155.7 704',
+          norte: '58 4 86 278',
+          centro: '32 262 72 130',
+          sur: '28 360 62 130',
+          austral: '6 468 118 205'
+        };
+
+        const MACRO_CODES = {
+          all: [],
+          norte: ['AP', 'TA', 'AN', 'AT', 'CO'],
+          centro: ['VS', 'RM', 'LI', 'ML', 'NB', 'BI'],
+          sur: ['AR', 'LR', 'LL'],
+          austral: ['AI', 'MA']
+        };
+
+        const STROKE_SCALE = { all: 0.7, norte: 0.5, centro: 0.35, sur: 0.35, austral: 0.55 };
+
+        const state = {
+          activeSlide: 1,
+          isDark: false,
+          selectedDim: null,
+          ineData: null,
+          selectedCode: 'RM',
+          metric: 'tasa',
+          macroZone: 'all',
+          activeZone: null,
+          copiedToken: null,
+          tplMode: 'page',
+          vpMode: 'desktop'
+        };
+
+        function fmtEs(n, dec) {
+          return Number(n).toFixed(dec == null ? 1 : dec).replace('.', ',');
+        }
+
+        function getBlueColor(val, min, max, metric) {
+          const ratio = max === min ? 0.5 : Math.max(0, Math.min(1, (val - min) / (max - min)));
+          if (metric === 'informalidad') {
+            if (ratio < 0.2) return '#E0F2FE';
+            if (ratio < 0.4) return '#BAE6FD';
+            if (ratio < 0.6) return '#38BDF8';
+            if (ratio < 0.8) return '#0284C7';
+            return '#075985';
+          }
+          if (metric === 'variacion_pp') {
+            if (val < 0) return '#BAE6FD';
+            if (ratio < 0.4) return '#93C5FD';
+            if (ratio < 0.65) return '#3B82F6';
+            if (ratio < 0.85) return '#1D4ED8';
+            return '#1E3A8A';
+          }
+          if (ratio < 0.2) return '#DBEAFE';
+          if (ratio < 0.4) return '#93C5FD';
+          if (ratio < 0.6) return '#60A5FA';
+          if (ratio < 0.8) return '#2563EB';
+          return '#1E3A8A';
+        }
+
+        /* Theme Logic */
+        function applyTheme(dark) {
+          state.isDark = dark;
+          document.documentElement.classList.toggle('dark', dark);
+          try { localStorage.setItem('ine-ds-theme', dark ? 'dark' : 'light'); } catch (e) {}
+          document.getElementById('themeLabel').textContent = dark ? 'Claro' : 'Oscuro';
+          document.getElementById('themeIcon').innerHTML = dark
+            ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7dd3fc" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>'
+            : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+          renderSlide3Tokens();
+        }
+
+        /* Slide Switching */
+        function setSlide(num) {
+          state.activeSlide = num;
+          document.querySelectorAll('.slide').forEach(function (el) {
+            el.classList.toggle('active', el.id === 'slide-' + num);
+          });
+          document.querySelectorAll('[data-slide-target]').forEach(function (btn) {
+            btn.classList.toggle('active', Number(btn.dataset.slideTarget) === num);
+          });
+          document.getElementById('slideCounter').textContent = num + ' / 3';
+        }
+
+        /* Render Slide 1 */
+        function renderSlide1() {
+          const row1 = document.getElementById('atomicRow1');
+          const row2 = document.getElementById('atomicRow2');
+          const makeCard = function (d) {
+            const isLast = d.index === '10';
+            const sel = state.selectedDim === d.index ? 'selected' : '';
+            return (
+              '<article class="dim-card ' + sel + '" tabindex="0" role="button" data-dim="' + d.index + '">' +
+                '<div>' +
+                  '<div class="dim-top">' +
+                    '<div class="dim-idx-group">' +
+                      '<span class="dim-icon-box"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d.icon + '</svg></span>' +
+                      '<span class="dim-index">' + d.index + '</span>' +
+                    '</div>' +
+                    '<span class="dim-stage">' + d.stage + '</span>' +
+                  '</div>' +
+                  '<h2 class="dim-title">' + d.title + '</h2>' +
+                  '<p class="dim-desc">' + d.description + '</p>' +
+                '</div>' +
+                '<div class="dim-bottom">' +
+                  '<div><span class="dim-kw-label">Palabra clave: </span><span class="dim-kw-val">' + d.keyword + '</span></div>' +
+                  (isLast ? '<button type="button" class="dim-link" data-open-transparency="1">Ver detalle IA</button>' : '') +
+                '</div>' +
+              '</article>'
+            );
+          };
+          row1.innerHTML = ATOMIC_DIMENSIONS.slice(0, 5).map(makeCard).join('');
+          row2.innerHTML = ATOMIC_DIMENSIONS.slice(5, 10).map(makeCard).join('');
+
+          document.querySelectorAll('.dim-card').forEach(function (card) {
+            card.addEventListener('click', function (e) {
+              if (e.target && e.target.dataset && e.target.dataset.openTransparency) {
+                openModal();
+                return;
+              }
+              const idx = card.dataset.dim;
+              state.selectedDim = state.selectedDim === idx ? null : idx;
+              renderSlide1();
+            });
+          });
+        }
+
+        /* Render Slide 2 Annotations */
+        function renderAnnotations() {
+          const wrap = document.getElementById('annotationsList');
+          wrap.innerHTML = ANNOTATIONS.map(function (a) {
+            const activeCls = state.activeZone === a.id ? 'active' : '';
+            return (
+              '<div class="anno-card ' + activeCls + '" tabindex="0" role="button" data-zone="' + a.id + '">' +
+                '<div class="anno-connector" aria-hidden="true"><span class="anno-dot"></span><span class="anno-line"></span></div>' +
+                '<div class="anno-head">' +
+                  '<span class="anno-num">' + a.num + '</span>' +
+                  '<h2 class="font-display" style="font-size:12px; font-weight:700;">' + a.title + '</h2>' +
+                '</div>' +
+                '<p style="margin-top:6px; font-size:11px; color:var(--texto-secundario);">' + a.desc + '</p>' +
+                '<span style="margin-top:5px; font-size:10px; font-weight:600; color:var(--celeste-acento);">' + a.target + '</span>' +
+              '</div>'
+            );
+          }).join('');
+
+          wrap.querySelectorAll('.anno-card').forEach(function (el) {
+            const z = el.dataset.zone;
+            el.addEventListener('mouseenter', function () { highlightZone(z); });
+            el.addEventListener('mouseleave', function () { highlightZone(null); });
+            el.addEventListener('click', function () { highlightZone(state.activeZone === z ? null : z); });
+          });
+        }
+
+        function highlightZone(zoneId) {
+          state.activeZone = zoneId;
+          document.querySelectorAll('.anno-card').forEach(function (el) {
+            el.classList.toggle('active', el.dataset.zone === zoneId);
+          });
+          const mapZones = {
+            identity: ['zone-identity'],
+            organization: ['zone-organization-map', 'zone-organization-kpis'],
+            context: ['zone-context'],
+            citizen: ['zone-citizen-controls', 'zone-citizen-note']
+          };
+          ['zone-identity', 'zone-organization-map', 'zone-organization-kpis', 'zone-context', 'zone-citizen-controls', 'zone-citizen-note'].forEach(function (id) {
+            const target = document.getElementById(id);
+            if (target) target.classList.remove('zone-highlighted');
+          });
+          if (zoneId && mapZones[zoneId]) {
+            mapZones[zoneId].forEach(function (id) {
+              const target = document.getElementById(id);
+              if (target) target.classList.add('zone-highlighted');
+            });
+          }
+        }
+
+        /* Render Map + Slide 2 & Slide 3 Live Data */
+        function getActiveRegion() {
+          if (!state.ineData || !state.ineData.regiones || !state.ineData.regiones.length) return null;
+          return (
+            state.ineData.regiones.find(function (r) { return r.codigo === state.selectedCode; }) ||
+            state.ineData.regiones.find(function (r) { return r.codigo === 'RM'; }) ||
+            state.ineData.regiones[0]
+          );
+        }
+
+        function renderRegionSelects() {
+          if (!state.ineData || !state.ineData.regiones) return;
+          const sorted = state.ineData.regiones.slice().sort(function (a, b) {
+            return a.region.localeCompare(b.region, 'es');
+          });
+          const opts = sorted.map(function (r) {
+            return '<option value="' + r.codigo + '"' + (r.codigo === state.selectedCode ? ' selected' : '') + '>' + r.region + '</option>';
+          }).join('');
+          document.getElementById('slide2RegionSelect').innerHTML = opts;
+          document.getElementById('slide3RegionSelect').innerHTML = opts;
+        }
+
+        function renderMap() {
+          const svg = document.getElementById('chileMapSvg');
+          svg.setAttribute('viewBox', MACRO_VIEWBOX[state.macroZone]);
+          const dataMap = {};
+          let vals = [];
+          if (state.ineData && state.ineData.regiones) {
+            state.ineData.regiones.forEach(function (r) {
+              dataMap[r.codigo] = r;
+              vals.push(r[state.metric]);
+            });
+          }
+          const minVal = vals.length ? Math.min.apply(null, vals) : 4;
+          const maxVal = vals.length ? Math.max.apply(null, vals) : 11.2;
+          const unit = state.metric === 'variacion_pp' ? ' pp' : '%';
+          document.getElementById('legendMin').textContent = (state.metric === 'variacion_pp' && minVal > 0 ? '+' : '') + fmtEs(minVal) + unit;
+          document.getElementById('legendMax').textContent = (state.metric === 'variacion_pp' && maxVal > 0 ? '+' : '') + fmtEs(maxVal) + unit;
+          document.getElementById('mapMetricLabel').textContent =
+            state.metric === 'tasa' ? 'Desocupación' : state.metric === 'informalidad' ? 'Informalidad' : 'Variación interanual';
+
+          const stroke = STROKE_SCALE[state.macroZone];
+          let paths = '';
+          let pin = '';
+          CHILE_GEO.regions.forEach(function (geo) {
+            const datum = dataMap[geo.codigo];
+            const val = datum ? datum[state.metric] : minVal;
+            const fill = datum ? getBlueColor(val, minVal, maxVal, state.metric) : '#cbd5e1';
+            const isSel = geo.codigo === state.selectedCode;
+            paths += '<path d="' + geo.d + '" fill="' + fill + '" stroke="' + (isSel ? '#0b2545' : '#ffffff') + '" stroke-width="' + (isSel ? stroke * 2.4 : stroke) + '" stroke-linejoin="round" tabindex="0" role="button" data-code="' + geo.codigo + '" style="cursor:pointer" aria-label="' + (datum ? datum.region : geo.nombre_shp) + ': ' + fmtEs(val) + unit + '"/>';
+            if (isSel) {
+              pin = '<circle cx="' + geo.cx + '" cy="' + geo.cy + '" r="' + (stroke * 4.2) + '" fill="#ffffff" stroke="#0b2545" stroke-width="' + (stroke * 1.6) + '" pointer-events="none"/><circle cx="' + geo.cx + '" cy="' + geo.cy + '" r="' + (stroke * 1.8) + '" fill="#0284c7" pointer-events="none"/>';
+            }
+          });
+          svg.innerHTML = paths + pin;
+
+          svg.querySelectorAll('path[data-code]').forEach(function (p) {
+            const code = p.dataset.code;
+            const datum = dataMap[code];
+            p.addEventListener('click', function () { selectRegion(code); });
+            p.addEventListener('mouseenter', function () {
+              if (!datum) return;
+              const tt = document.getElementById('mapTooltip');
+              document.getElementById('mapTooltipName').textContent = datum.region;
+              document.getElementById('mapTooltipVal').textContent = (state.metric === 'variacion_pp' && datum[state.metric] > 0 ? '+' : '') + fmtEs(datum[state.metric]) + unit;
+              tt.style.display = 'flex';
+            });
+            p.addEventListener('mouseleave', function () {
+              document.getElementById('mapTooltip').style.display = 'none';
+            });
+          });
+        }
+
+        function renderSlide2Data() {
+          const d = state.ineData;
+          const reg = getActiveRegion();
+          if (!d || !reg) return;
+
+          document.getElementById('slide2BulletinMeta').textContent = 'INE Boletín ENE n.º ' + d.boletin;
+          document.getElementById('ineHeaderSubtitle').textContent = 'Boletín ENE n.º ' + d.boletin + ' · ' + d.trimestre + ' · ' + d.fecha_publicacion;
+          document.getElementById('activeRegionTitle').textContent = 'Región de ' + reg.region;
+          document.getElementById('activeRegionMeta').textContent = 'Código territorial: ' + reg.codigo + ' · Trimestre ' + d.trimestre;
+          document.getElementById('nationalBenchmark').textContent = fmtEs(d.nacional.tasa) + '% (' + (d.nacional.variacion_pp > 0 ? '+' : '') + fmtEs(d.nacional.variacion_pp) + ' pp)';
+
+          document.getElementById('kpiTasa').textContent = fmtEs(reg.tasa) + '%';
+          document.getElementById('kpiVar').textContent = (reg.variacion_pp > 0 ? '▲ +' : reg.variacion_pp < 0 ? '▼ ' : '') + fmtEs(reg.variacion_pp) + ' pp';
+          document.getElementById('kpiVarLabel').textContent = reg.variacion_pp > 0 ? 'Alza interanual' : reg.variacion_pp < 0 ? 'Baja interanual' : 'Sin cambio';
+          document.getElementById('kpiInformalidad').textContent = fmtEs(reg.informalidad) + '%';
+          document.getElementById('kpiSexo').textContent = fmtEs(reg.tasa_hombres) + '% / ' + fmtEs(reg.tasa_mujeres) + '%';
+
+          document.getElementById('sexCardTitle').textContent = 'Brecha por sexo en ' + reg.region;
+          document.getElementById('sexGapDiff').textContent = 'Dif: ' + fmtEs(Math.abs(reg.tasa_mujeres - reg.tasa_hombres)) + ' pp';
+          document.getElementById('sexMenVal').textContent = fmtEs(reg.tasa_hombres) + '%';
+          document.getElementById('sexWomenVal').textContent = fmtEs(reg.tasa_mujeres) + '%';
+          document.getElementById('sexMenBar').style.width = Math.min(100, (reg.tasa_hombres / 15) * 100) + '%';
+          document.getElementById('sexWomenBar').style.width = Math.min(100, (reg.tasa_mujeres / 15) * 100) + '%';
+
+          document.getElementById('contrastCardTitle').textContent = 'Contraste regional (Chile: ' + fmtEs(d.nacional.tasa) + '%)';
+          const ordered = d.regiones.slice().sort(function (a, b) { return b.tasa - a.tasa; });
+          const picks = [ordered[0], ordered[1], ordered[ordered.length - 1]];
+          if (!picks.some(function (p) { return p.codigo === reg.codigo; })) picks.splice(2, 0, reg);
+          document.getElementById('regionalContrastBars').innerHTML = picks.map(function (item) {
+            const cur = item.codigo === reg.codigo;
+            return (
+              '<button type="button" data-pick="' + item.codigo + '" style="border:0;background:transparent;padding:0;text-align:left;cursor:pointer;width:100%;">' +
+                '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:' + (cur ? 'var(--azul-ine)' : 'var(--texto-secundario)') + ';font-weight:' + (cur ? '700' : '500') + ';">' +
+                  '<span>' + item.region + '</span>' +
+                  '<strong class="mono-num" style="color:var(--azul-tinta)">' + fmtEs(item.tasa) + '%</strong>' +
+                '</div>' +
+                '<div class="bar-track" style="height:5px;"><div class="bar-fill ' + (cur ? '' : 'muted') + '" style="width:' + Math.min(100, (item.tasa / 13) * 100) + '%"></div></div>' +
+              '</button>'
+            );
+          }).join('');
+          document.querySelectorAll('[data-pick]').forEach(function (b) {
+            b.addEventListener('click', function () { selectRegion(b.dataset.pick); });
+          });
+
+          const diff = reg.tasa - d.nacional.tasa;
+          const comp = Math.abs(diff) < 0.05 ? 'igual al promedio nacional' : diff > 0 ? fmtEs(Math.abs(diff)) + ' pp sobre el promedio nacional' : fmtEs(Math.abs(diff)) + ' pp bajo el promedio nacional';
+          const vtxt = reg.variacion_pp > 0 ? 'subió ' + fmtEs(reg.variacion_pp) + ' pp en 12 meses' : reg.variacion_pp < 0 ? 'bajó ' + fmtEs(Math.abs(reg.variacion_pp)) + ' pp en 12 meses' : 'se mantuvo sin variación en 12 meses';
+          document.getElementById('citizenNoteText').innerHTML = '<strong style="color:var(--azul-ine)">Nota verificable para prensa y ciudadanía: </strong>En ' + reg.region + ', la desocupación fue ' + fmtEs(reg.tasa) + '% (' + comp + ') y ' + vtxt + '. Informalidad regional: ' + fmtEs(reg.informalidad) + '%.';
+          document.getElementById('regionSourceText').textContent = 'Fuente: ' + reg.fuente;
+          document.getElementById('regionPdfLink').href = reg.url;
+          document.getElementById('nationalExcelLink').href = d.serie_excel;
+        }
+
+        /* Render Slide 3 */
+        function renderSlide3Static() {
+          document.getElementById('canvasBoxesGrid').innerHTML = CANVAS_BOXES.map(function (b) {
+            return (
+              '<div class="card-panel" style="padding:8px;">' +
+                '<div style="font-size:10.5px; font-weight:700;"><span class="mono-num" style="color:var(--azul-ine);">' + b.n + '. </span>' + b.label + '</div>' +
+                '<p style="font-size:10.5px; color:var(--texto-secundario); margin-top:4px;">' + b.text + '</p>' +
+              '</div>'
+            );
+          }).join('');
+
+          document.getElementById('principlesList').innerHTML = PRINCIPLES.map(function (p) {
+            return (
+              '<div class="card-panel" style="padding:9px 11px;">' +
+                '<div style="font-size:11.5px; font-weight:700;"><span class="mono-num" style="color:var(--azul-ine); margin-right:5px;">' + p.n + '</span>' + p.title + '</div>' +
+                '<p style="font-size:11px; color:var(--texto-secundario); margin-top:3px;">' + p.text + '</p>' +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        function renderSlide3Tokens() {
+          const list = state.isDark ? COLOR_TOKENS_DARK : COLOR_TOKENS_LIGHT;
+          document.getElementById('tokensSectionHeading').textContent =
+            '3 · Tokens (' + (state.isDark ? 'Modo oscuro activo' : 'Modo luminoso activo') + '): color con contraste medido, tipografía, espaciado, grilla y bordes';
+          document.getElementById('tokensCopyHint').textContent =
+            'Haz clic en una muestra para copiar su valor hexadecimal (' + (state.isDark ? 'oscuro' : 'claro') + ')';
+          document.getElementById('borderTokensTitle').textContent =
+            'Bordes y sombras (' + (state.isDark ? 'oscuro' : 'claro') + ')';
+          document.getElementById('borderTokenVal').textContent =
+            state.isDark ? '1px sólido #1E334D' : '1px sólido #DCE7F3';
+          document.getElementById('elevationTokenVal').textContent =
+            state.isDark ? 'Plano · contraste por borde' : '1 nivel · y:10 blur:35';
+
+          document.getElementById('swatchesGrid').innerHTML = list.map(function (item) {
+            const copied = state.copiedToken === item.token;
+            return (
+              '<button type="button" class="swatch-btn" data-token="' + item.token + '" data-hex="' + item.hex + '">' +
+                '<div class="swatch-color" style="background:' + item.hex + '"></div>' +
+                '<div class="mono-num" style="font-size:10.5px; font-weight:700;">' + item.token + '</div>' +
+                '<div class="mono-num" style="font-size:10px; color:var(--azul-ine);">' + (copied ? 'Copiado ✓' : item.hex) + '</div>' +
+                '<div style="font-size:10px; color:var(--texto-suave); margin-top:2px;">' + item.contrast + '</div>' +
+              '</button>'
+            );
+          }).join('');
+
+          document.querySelectorAll('.swatch-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              const hex = btn.dataset.hex;
+              const tok = btn.dataset.token;
+              if (navigator.clipboard) navigator.clipboard.writeText(hex).catch(function () {});
+              state.copiedToken = tok;
+              renderSlide3Tokens();
+              setTimeout(function () {
+                if (state.copiedToken === tok) {
+                  state.copiedToken = null;
+                  renderSlide3Tokens();
+                }
+              }, 1400);
+            });
+          });
+        }
+
+        function renderSlide3Data() {
+          const d = state.ineData;
+          const reg = getActiveRegion();
+          if (!d || !reg) return;
+
+          document.getElementById('slide3Meta').textContent = '/regiones · Boletín ENE ' + d.boletin;
+          document.getElementById('atomPdfLink').href = reg.url;
+          document.getElementById('atomTrimestreLabel').textContent = d.trimestre;
+          document.getElementById('atomFieldInput').value = reg.region;
+          document.getElementById('atomBigNum').textContent = fmtEs(reg.tasa) + '%';
+
+          document.getElementById('molRegionName').textContent = 'Región de ' + reg.region;
+          document.getElementById('molRegionRate').textContent = fmtEs(reg.tasa) + '%';
+          document.getElementById('molRegionVar').textContent =
+            (reg.variacion_pp > 0 ? '+' : '') + fmtEs(reg.variacion_pp) + ' pp en 12 meses · Informalidad ' + fmtEs(reg.informalidad) + '%';
+          document.getElementById('molRegionSource').textContent = reg.fuente;
+
+          const top6 = d.regiones.slice().sort(function (a, b) { return b.tasa - a.tasa; }).slice(0, 6);
+          document.getElementById('dsRegionsTableBody').innerHTML = top6.map(function (row) {
+            const cur = row.codigo === reg.codigo;
+            return (
+              '<tr class="' + (cur ? 'current-row' : '') + '" data-row-code="' + row.codigo + '">' +
+                '<td>' + row.region + '</td>' +
+                '<td class="mono-num" style="text-align:right; color:var(--azul-ine);">' + fmtEs(row.tasa) + '%</td>' +
+                '<td class="mono-num" style="text-align:right;">' + (row.variacion_pp > 0 ? '+' : '') + fmtEs(row.variacion_pp) + ' pp</td>' +
+                '<td class="mono-num" style="text-align:right; color:var(--texto-secundario);">' + fmtEs(row.informalidad) + '%</td>' +
+                '<td style="text-align:right;"><a href="' + row.url + '" target="_blank" rel="noopener noreferrer" style="color:var(--azul-ine); font-weight:600;">PDF</a></td>' +
+              '</tr>'
+            );
+          }).join('');
+
+          document.querySelectorAll('#dsRegionsTableBody tr[data-row-code]').forEach(function (tr) {
+            tr.addEventListener('click', function (e) {
+              if (e.target && e.target.tagName === 'A') return;
+              selectRegion(tr.dataset.rowCode);
+            });
+          });
+
+          document.getElementById('orgPressNote').textContent =
+            'Cobertura territorial: ' + reg.region + ' registra ' + fmtEs(reg.tasa) + '% de desocupación (' + fmtEs(reg.tasa_hombres) + '% hombres, ' + fmtEs(reg.tasa_mujeres) + '% mujeres).';
+
+          renderTemplatePreview();
+        }
+
+        function renderTemplatePreview() {
+          const box = document.getElementById('templatePreviewBox');
+          const inner = document.getElementById('tplPreviewInner');
+          const reg = getActiveRegion();
+          const isMobile = state.vpMode === 'mobile';
+          const isTpl = state.tplMode === 'template';
+          box.style.width = isMobile ? '240px' : '100%';
+          document.getElementById('vpLabel').textContent = isMobile ? 'Teléfono (375 px)' : 'Escritorio (1280 px)';
+          document.getElementById('tplLabel').textContent = isTpl ? 'Estructura sin datos' : 'Datos en vivo INE';
+
+          const cols = isMobile ? '1fr' : '4fr 8fr';
+          inner.innerHTML =
+            '<div style="display:grid; grid-template-columns:' + cols + '; gap:8px;">' +
+              '<div style="border:1px dashed var(--borde-acento); background:var(--superficie); border-radius:8px; padding:8px; text-align:center; font-size:10.5px; font-weight:600;">' +
+                (isTpl ? '[ Slot: Mapa territorial ]' : 'Mapa SVG · 16 regiones') +
+              '</div>' +
+              '<div style="border:1px solid var(--borde); background:var(--superficie); border-radius:8px; padding:8px;">' +
+                (isTpl
+                  ? '<div style="height:10px;width:60%;background:var(--borde-acento);border-radius:4px;margin-bottom:6px;"></div><div style="height:18px;width:35%;background:var(--borde);border-radius:4px;"></div>'
+                  : '<div style="font-size:11px;font-weight:700;">' + (reg ? reg.region : 'Metropolitana') + '</div><div class="mono-num" style="font-size:18px;font-weight:700;color:var(--azul-ine);">' + (reg ? fmtEs(reg.tasa) + '%' : '9,8%') + '</div><div style="font-size:10px;color:var(--texto-suave);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (reg ? reg.fuente : 'INE ENE 335') + '</div>') +
+              '</div>' +
+            '</div>';
+        }
+
+        function selectRegion(code) {
+          state.selectedCode = code;
+          renderRegionSelects();
+          renderMap();
+          renderSlide2Data();
+          renderSlide3Data();
+        }
+
+        function openModal() {
+          document.getElementById('transparencyModal').classList.add('open');
+        }
+        function closeModal() {
+          document.getElementById('transparencyModal').classList.remove('open');
+        }
+
+        /* Bind Events */
+        document.querySelectorAll('[data-slide-target]').forEach(function (btn) {
+          btn.addEventListener('click', function () { setSlide(Number(btn.dataset.slideTarget)); });
+        });
+        document.getElementById('brandHomeLink').addEventListener('click', function (e) {
+          e.preventDefault();
+          setSlide(1);
+        });
+        document.getElementById('prevSlideBtn').addEventListener('click', function () {
+          setSlide(state.activeSlide === 1 ? 3 : state.activeSlide - 1);
+        });
+        document.getElementById('nextSlideBtn').addEventListener('click', function () {
+          setSlide(state.activeSlide === 3 ? 1 : state.activeSlide + 1);
+        });
+        document.getElementById('themeToggleBtn').addEventListener('click', function () {
+          applyTheme(!state.isDark);
+        });
+        document.getElementById('openTransparencyBtn').addEventListener('click', openModal);
+        document.getElementById('molTransparencyLink').addEventListener('click', openModal);
+        document.getElementById('orgTransparencyBtn').addEventListener('click', openModal);
+        document.getElementById('closeTransparencyBtn').addEventListener('click', closeModal);
+        document.getElementById('acceptTransparencyBtn').addEventListener('click', closeModal);
+        document.getElementById('transparencyModal').addEventListener('click', function (e) {
+          if (e.target.id === 'transparencyModal') closeModal();
+        });
+
+        document.getElementById('slide2RegionSelect').addEventListener('change', function (e) {
+          selectRegion(e.target.value);
+        });
+        document.getElementById('slide3RegionSelect').addEventListener('change', function (e) {
+          selectRegion(e.target.value);
+        });
+        document.getElementById('atomCycleBtn').addEventListener('click', function () {
+          selectRegion(state.selectedCode === 'RM' ? 'BI' : 'RM');
+        });
+
+        document.querySelectorAll('[data-macrozone]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.macroZone = btn.dataset.macrozone;
+            document.querySelectorAll('[data-macrozone]').forEach(function (b) {
+              b.classList.toggle('active', b.dataset.macrozone === state.macroZone);
+            });
+            const codes = MACRO_CODES[state.macroZone];
+            if (codes.length && codes.indexOf(state.selectedCode) === -1) {
+              state.selectedCode = codes[0];
+              renderRegionSelects();
+              renderSlide2Data();
+              renderSlide3Data();
+            }
+            renderMap();
+          });
+        });
+
+        document.querySelectorAll('[data-metric]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.metric = btn.dataset.metric;
+            document.querySelectorAll('[data-metric]').forEach(function (b) {
+              b.classList.toggle('active', b.dataset.metric === state.metric);
+            });
+            renderMap();
+          });
+        });
+
+        document.querySelectorAll('[data-tpl]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.tplMode = btn.dataset.tpl;
+            document.querySelectorAll('[data-tpl]').forEach(function (b) {
+              b.classList.toggle('active', b.dataset.tpl === state.tplMode);
+            });
+            renderTemplatePreview();
+          });
+        });
+
+        document.querySelectorAll('[data-vp]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.vpMode = btn.dataset.vp;
+            document.querySelectorAll('[data-vp]').forEach(function (b) {
+              b.classList.toggle('active', b.dataset.vp === state.vpMode);
+            });
+            renderTemplatePreview();
+          });
+        });
+
+        document.querySelectorAll('[data-bstate]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            document.getElementById('inspectedStateLabel').textContent = btn.dataset.bstate;
+          });
+        });
+
+        window.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { closeModal(); return; }
+          if (document.getElementById('transparencyModal').classList.contains('open')) return;
+          const tag = e.target && e.target.tagName;
+          if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+          if (e.key === 'ArrowRight') setSlide(state.activeSlide === 3 ? 1 : state.activeSlide + 1);
+          if (e.key === 'ArrowLeft') setSlide(state.activeSlide === 1 ? 3 : state.activeSlide - 1);
+        });
+
+        /* Init */
+        let savedDark = false;
+        try { savedDark = localStorage.getItem('ine-ds-theme') === 'dark'; } catch (e) {}
+        applyTheme(savedDark);
+        renderSlide1();
+        renderAnnotations();
+        renderSlide3Static();
+        renderMap();
+        renderTemplatePreview();
+
+        fetch(INE_API_URL)
+          .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function (json) {
+            state.ineData = json;
+            renderRegionSelects();
+            renderMap();
+            renderSlide2Data();
+            renderSlide3Data();
+          })
+          .catch(function (err) {
+            document.getElementById('activeRegionTitle').textContent = 'Error al cargar datos del INE';
+            document.getElementById('citizenNoteText').textContent = 'No se pudo conectar con ' + INE_API_URL + ' (' + err.message + ').';
+          });
+      })();
+    </script>
+  </body>
+</html>
